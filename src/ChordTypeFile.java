@@ -1,0 +1,3 @@
+public class ChordTypeFile {
+    enum ChordType {TONIC, SUPERTONIC, MEDIANT, SUBDOMINANT, DOMINANT, SUBMEDIANT, LEADINGTONE;}
+}
