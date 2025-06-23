@@ -3,7 +3,7 @@
  * It handles the proper calculation of notes and applies necessary sharps/flats
  * to maintain the correct tonal relationships for the selected mode.
  */
-public class Generate7NoteScale {
+public class DS7Note {
     // Core components for scale generation
     private KeyFile.Key key;                        // The tonic/root note of the scale (e.g., C, D, E, etc.)
     private ModeFile.Mode mode;                     // The mode of the scale (Ionian/Major, Dorian, Phrygian, etc.)

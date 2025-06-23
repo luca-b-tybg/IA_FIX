@@ -110,7 +110,7 @@ public class Main {
         KeyFile.Key key = result.getKey();
         ModeFile.Mode mode = result.getMode();
 
-        Generate7NoteScale sevenNoteTest = new Generate7NoteScale();
+        DS7Note sevenNoteTest = new DS7Note();
         sevenNoteTest.generateFinalScale(key, mode);
 
         GenerateFullScaleWithOctaves octaveTest = new GenerateFullScaleWithOctaves();

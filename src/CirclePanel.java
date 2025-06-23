@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class CirclePanel extends JPanel {
-    private DrawCircleOfFifths drawer = new DrawCircleOfFifths();
+    private COFDraw drawer = new COFDraw();
 
     KeyFile.Key key;
     COFMMFile.COFMM mm;

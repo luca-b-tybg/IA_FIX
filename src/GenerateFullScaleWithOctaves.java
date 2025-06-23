@@ -62,7 +62,7 @@ public class GenerateFullScaleWithOctaves {
         }
     }
 
-    public void fullFinalScale(int[]octRange, Generate7NoteScale scaleGenerator) {
+    public void fullFinalScale(int[]octRange, DS7Note scaleGenerator) {
         this.octRange = octRange;
         setScaleLength();
         setScale(scaleGenerator.getOrganisedScale(), scaleGenerator.getcOrganisedScale());

@@ -1,8 +1,7 @@
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class DrawCircleOfFifths {
+public class COFDraw {
 
     public void drawCircleOfFifths(Graphics2D g2, int centerX, int centerY, int radius, KeyFile.Key key, COFMMFile.COFMM mm) {
         // Key names
@@ -59,48 +58,34 @@ public class DrawCircleOfFifths {
             // Major (outer)
             int xMaj = (int) (centerX + Math.cos(angle) * (radius - 10));
             int yMaj = (int) (centerY + Math.sin(angle) * (radius - 10));
-            for (int j = 0; j < highlightRelated.size(); j++) {
-                if (majors[i] == highlightTonic) {
-                    g2.setColor(Color.RED);
-                }
-                else if (majors[i] == highlightRelated.get(j)){
-                    g2.setColor(Color.ORANGE);
-                }
-                else {
-                    g2.setColor(Color.BLACK);
-                }
-                g2.drawString(majors[i], xMaj - 10, yMaj + 5);
+            if (majors[i].equals(highlightTonic)) {
+                g2.setColor(Color.RED);
+            } else if (highlightRelated.contains(majors[i])) {
+                g2.setColor(Color.ORANGE);
+            } else {
+                g2.setColor(Color.BLACK);
             }
+            g2.drawString(majors[i], xMaj - 10, yMaj + 5);
 
             // Minor (middle)
             int xMin = (int) (centerX + Math.cos(angle) * (minorRadius - 10));
             int yMin = (int) (centerY + Math.sin(angle) * (minorRadius - 10));
-            for (int j = 0; j < highlightRelated.size(); j++) {
-                if (minors[i] == highlightTonic) {
-                    g2.setColor(Color.RED);
-                }
-                else if (minors[i] == highlightRelated.get(j)){
-                    g2.setColor(Color.ORANGE);
-                }
-                else {
-                    g2.setColor(Color.BLACK);
-                }
-                g2.drawString(majors[i], xMin - 10, yMin + 5);
+            if (highlightRelated.contains(minors[i])) {
+                g2.setColor(Color.ORANGE);
+            } else {
+                g2.setColor(Color.BLACK);
             }
+            g2.drawString(minors[i], xMin - 10, yMin + 5);
 
             // Diminished (inner)
             int xDim = (int) (centerX + Math.cos(angle) * (diminishedRadius - 10));
             int yDim = (int) (centerY + Math.sin(angle) * (diminishedRadius - 10));
-            for (int j = 0; j < 12; j++) {
-                if (diminished[i] == highlightDiminished) {
-                    g2.setColor(Color.ORANGE);
-                }
-                else {
-                    g2.setColor(Color.BLACK);
-                }
-                g2.drawString(majors[i], xDim - 10, yDim + 5);
+            if (diminished[i].equals(highlightDiminished)) {
+                g2.setColor(Color.ORANGE);
+            } else {
+                g2.setColor(Color.BLACK);
             }
+            g2.drawString(diminished[i], xDim - 10, yDim + 5);
         }
     }
-
 }
