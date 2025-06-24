@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class COFDraw {
 
-    public void drawCircleOfFifths(Graphics2D g2, int centerX, int centerY, int radius, KeyFile.Key key, COFMMFile.COFMM mm) {
+    public void drawCircleOfFifths(Graphics2D g2, int centerX, int centerY, int radius, COFKeyFile.Key key, COFMMFile.COFMM mm) {
         // Key names
         String[] majors = {"C", "G", "D", "A", "E", "B", "F#", "C#", "G#", "D#", "A#", "F"};
         String[] minors = {"a", "e", "b", "f#", "c#", "g#", "d#", "a#", "f", "c", "g", "d"};
@@ -41,7 +41,34 @@ public class COFDraw {
                 }
             }
         }
+        else if (mm == COFMMFile.COFMM.MINOR){
+            for(int i=0;i<minors.length;i++){
+                if (minors[i].toUpperCase().equals(key.name())){
+                    highlightTonic = minors[i];
+                    highlightDiminished = diminished[i];
+                    if (i == 0) {
+                        highlightRelated.add(minors[11]);
+                        highlightRelated.add(minors[i+1]);
+                        highlightRelated.add(majors[11]);
+                        highlightRelated.add(majors[i+1]);
+                    }
+                    else if (i == 11){
+                        highlightRelated.add(minors[0]);
+                        highlightRelated.add(minors[i-1]);
+                        highlightRelated.add(majors[0]);
+                        highlightRelated.add(majors[i-1]);
+                    }
+                    else {
+                        highlightRelated.add(majors[i - 1]);
+                        highlightRelated.add(majors[i + 1]);
+                        highlightRelated.add(minors[i - 1]);
+                        highlightRelated.add(minors[i + 1]);
+                    }
+                    highlightRelated.add(majors[i]);
 
+                }
+            }
+        }
 
         int minorRadius = radius - 40;
         int diminishedRadius = minorRadius - 40;
@@ -54,7 +81,6 @@ public class COFDraw {
         // Draw labels
         for (int i = 0; i < 12; i++) {
             double angle = Math.toRadians((360 / 12) * i - 90);
-
             // Major (outer)
             int xMaj = (int) (centerX + Math.cos(angle) * (radius - 10));
             int yMaj = (int) (centerY + Math.sin(angle) * (radius - 10));
@@ -70,7 +96,9 @@ public class COFDraw {
             // Minor (middle)
             int xMin = (int) (centerX + Math.cos(angle) * (minorRadius - 10));
             int yMin = (int) (centerY + Math.sin(angle) * (minorRadius - 10));
-            if (highlightRelated.contains(minors[i])) {
+            if (highlightTonic.equals(minors[i])) {
+                g2.setColor(Color.RED);
+            } else if (highlightRelated.contains(minors[i])) {
                 g2.setColor(Color.ORANGE);
             } else {
                 g2.setColor(Color.BLACK);

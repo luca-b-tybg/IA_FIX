@@ -34,19 +34,19 @@ public class COFTakeUserInput {
 
     public COFUserInputResult getUserInput() {
         Scanner scanner = new Scanner(System.in);
-        KeyFile.Key key = null;
+        COFKeyFile.Key key = null;
         COFMMFile.COFMM COFMM = null;
 
         // Accept valid key input
         String keyEntered;
         while (true) {
-            System.out.println("Enter Key (valid keys: A, B, C, D, E, F, G): ");
+            System.out.println("Enter Key (A-G OR for sharps type as GSHARP): ");
             keyEntered = scanner.nextLine().trim().toUpperCase();
             try {
-                key = KeyFile.Key.valueOf(keyEntered); // Reference Key enum from KeyFile
+                key = COFKeyFile.Key.valueOf(keyEntered); // Reference Key enum from KeyFile
                 break; // Exit loop if valid key is entered
             } catch (IllegalArgumentException e) {
-                System.out.println("Invalid input. Key must be one of: A, B, C, D, E, F, G.");
+                System.out.println("Invalid input.");
             }
         }
         System.out.println("Key is: " + key);

@@ -4,10 +4,10 @@ import java.awt.*;
 public class CirclePanel extends JPanel {
     private COFDraw drawer = new COFDraw();
 
-    KeyFile.Key key;
+    COFKeyFile.Key key;
     COFMMFile.COFMM mm;
 
-    public CirclePanel (KeyFile.Key key, COFMMFile.COFMM mm) {
+    public CirclePanel (COFKeyFile.Key key, COFMMFile.COFMM mm) {
         this.key = key;
         this.mm = mm;
     }

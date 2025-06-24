@@ -129,7 +129,7 @@ public class Main {
         COFUserInputResult result = userInput.getUserInput();
 
         // Display basic information about the circle of fifths for selected key
-        KeyFile.Key key = result.getKey();
+        COFKeyFile.Key key = result.getKey();
         COFMMFile.COFMM COFMM = result.getCOFMM();
 
         System.out.println("\nSelected key: " + key + " " + COFMM);
