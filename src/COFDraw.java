@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -8,6 +9,18 @@ public class COFDraw {
         String[] majors = {"C", "G", "D", "A", "E", "B", "F#", "C#", "G#", "D#", "A#", "F"};
         String[] minors = {"a", "e", "b", "f#", "c#", "g#", "d#", "a#", "f", "c", "g", "d"};
         String[] diminished = {"Bdim", "F#dim", "C#dim", "G#dim", "D#dim", "A#dim", "Fdim", "Cdim", "Gdim", "Ddim", "Adim", "Edim"};
+
+        JButton[] majButton = new JButton[majors.length];
+        JButton[] minButton = new JButton[minors.length];
+        JButton[] dimButton = new JButton[diminished.length];
+
+        JPanel majPanel = new JPanel();
+
+        for(int i=0; i<11; i++){
+            majButton[i] = new JButton(majors[i]);
+            minButton[i] = new JButton(minors[i]);
+            dimButton[i] = new JButton(diminished[i]);
+        }
 
         String highlightTonic = "";
         String highlightDiminished = "";
@@ -92,6 +105,11 @@ public class COFDraw {
                 g2.setColor(Color.BLACK);
             }
             g2.drawString(majors[i], xMaj - 10, yMaj + 5);
+
+            majPanel.add(majButton[i]);
+            majFrame.add(majPanel);
+            majFrame.setVisible(true);
+
 
             // Minor (middle)
             int xMin = (int) (centerX + Math.cos(angle) * (minorRadius - 10));
