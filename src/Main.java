@@ -147,30 +147,5 @@ public class Main {
     private static void runMelodyGenerator() {
         System.out.println("Melody Generator");
         System.out.println("================");
-/*
-        // Get input for melody generation
-        DSTakeUserInput userInput = new DSTakeUserInput();
-        DSUserInputResult result = userInput.getUserInput();
-
-        KeyFile.Key key = result.getKey();
-        ModeFile.Mode mode = result.getMode();
-
-        // Generate the scale as a basis for the melody
-        Generate7NoteScale scaleGen = new Generate7NoteScale();
-        scaleGen.setKey(key);
-        scaleGen.setMode(mode);
-        scaleGen.reorganizeScale();
-        scaleGen.findSharpsAndFlats();
-
-        // Display the scale
-        System.out.println("\nScale for melody generation:");
-        String[] scale = scaleGen.getOrganisedScale();
-        for (String note : scale) {
-            System.out.print(note + " ");
-        }
-
-        System.out.println("\n\nMelody generation will be implemented in future updates.");
-
- */
     }
 }

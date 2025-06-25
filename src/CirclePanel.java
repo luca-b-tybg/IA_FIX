@@ -15,6 +15,10 @@ public class CirclePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        drawer.drawCircleOfFifths((Graphics2D) g, getWidth() / 2, getHeight() / 2, Math.min(getWidth(), getHeight()) / 2 - 40, this.key, this.mm);
+
+        JButton[] relTonButton = new JButton[5]; //relative keys of the tonic
+        JButton[] relKeyButton = new JButton[5]; //relative keys of the previously chosen chord/key
+
+        drawer.drawCircleOfFifths((Graphics2D) g, getWidth() / 2, getHeight() / 2, Math.min(getWidth(), getHeight()) / 2 - 40, this.key, this.mm, relTonButton, relKeyButton);
     }
 }
