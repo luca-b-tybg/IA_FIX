@@ -1,10 +1,8 @@
 package ui;
 
+import diatonicscale.DS7Note;
 import diatonicscale.DiatonicScaleInputs;
-import scale.GenerateFullScaleWithOctaves;
-import scale.KeyFile;
-import scale.Note;
-import scale.Octave;
+import scale.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,12 +25,11 @@ public class DiatonicScalePanel extends JPanel implements DiatonicScaleParameter
     public void onDiatonicScaleParametersChanged(DiatonicScaleInputs diatonicScaleInputs) {
         System.out.println("onDiatonicScaleParametersChanged" + diatonicScaleInputs);
         var octaves = octaveTest.fullFinalScale(diatonicScaleInputs.getOctRange(), diatonicScaleInputs.getKey(), diatonicScaleInputs.getMode());
-        scorePanel.setNotes(List.of(new Note(KeyFile.C), new Note(KeyFile.D),
-                new Note(KeyFile.E)
-                , new Note(KeyFile.F)));
-
-        for (Octave s : octaves) {
+        DS7Note x = new DS7Note(KeyFile.C, Mode.IONIAN);
+        scorePanel.setNotes(x.getScaleForKey(diatonicScaleInputs.getKey()));
+        //octaveTest.generateFullScaleWithOctavesOld(diatonicScaleInputs.getOctRange(), diatonicScaleInputs.getKey(), diatonicScaleInputs.getMode())
+        /*for (Octave s : octaves) {
             System.out.println(s);
-        }
+        }*/
     }
 }

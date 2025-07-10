@@ -12,7 +12,7 @@ import java.util.List;
 public class GenerateFullScaleWithOctaves {
     private KeyFile[] sevenNotesNoMod = new KeyFile[7]; // Natural notes without sharps/flats (used to track octave transitions)
     private Note[] sevenNotes = new Note[7];      // Notes with any sharps/flats applied
-    private String[] finalScale;             // The complete scale across all octaves
+   // private String[] finalScale;             // The complete scale across all octaves
 
     // Setters
 
@@ -47,7 +47,7 @@ public class GenerateFullScaleWithOctaves {
         int currentOctave = octRange.octaveStart; // Start at the first octave in the range
         Octave octave = new Octave(currentOctave );
         // Loop through each octave in the range
-        for (int o = octRange.octaveStart; o < octRange.octaveEnd; o++) {
+        for (int o = octRange.octaveStart; o <= octRange.octaveEnd; o++) {
             // Loop through each of the 7 notes in the scale
 
             for (int i = 0; i < 7; i++) {
@@ -71,6 +71,32 @@ public class GenerateFullScaleWithOctaves {
 
         return allOctaves;
     }
+
+   /* public Note[] generateFullScaleWithOctavesOld(OctaveRange octRange) {
+        String [] finalScale = new String[getScaleLength(octRange)];
+        int scaleIndex = 0;
+        int currentOctave = octRange.octaveStart; // Start at the first octave in the range
+
+        // Loop through each octave in the range
+        for (int o = octRange.octaveStart; o < octRange.octaveEnd; o++) {
+            // Loop through each of the 7 notes in the scale
+            for (int i = 0; i < 7; i++) {
+                // Add the current note with its octave number to the final scale
+                finalScale[scaleIndex] = sevenNotes[i] .toString() + currentOctave;
+                scaleIndex++;
+
+                // If we've reached B, increment the octave
+                // This follows standard music notation where C starts a new octave
+                if (sevenNotesNoMod[i].name().equals("B")) {
+                    currentOctave++;
+                }
+            }
+            // Add the final tonic note to complete the octave (e.g., C after B)
+            finalScale[scaleIndex] = sevenNotes[0] .toString() + currentOctave;
+        }
+
+        return finalScale;
+    }*/
 
     public List< Octave>fullFinalScale(OctaveRange octRange, KeyFile key, Mode mode) {
 

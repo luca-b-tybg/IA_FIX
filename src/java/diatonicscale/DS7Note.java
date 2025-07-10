@@ -90,9 +90,22 @@ public class DS7Note {
                     Note.forKey(KeyFile.D),
                     Note.forKey(KeyFile.E),
                     Note.sharp(KeyFile.F),
-                    Note.sharp(KeyFile.G))   // A major - F#, C#, G#
-            // KeyFile.E,  Arrays.asList("E", "F#", "G#", "A", "B", "C#", "D#"),  // E major - F#, C#, G#, D#
-            // KeyFile.B, Arrays.asList("B", "C#", "D#", "E", "F#", "G#", "A#"), // B major - F#, C#, G#, D#, A#
+                    Note.sharp(KeyFile.G)),   // A major - F#, C#, G#
+            Note.forKey(KeyFile.E),
+            Arrays.asList(Note.forKey(KeyFile.E),
+                    Note.sharp(KeyFile.F),
+                    Note.sharp(KeyFile.G),
+                    Note.forKey(KeyFile.A),
+                    Note.forKey(KeyFile.B),
+                    Note.sharp(KeyFile.C),
+                    Note.sharp(KeyFile.D)),  // E major - F#, C#, G#, D#
+            Note.forKey(KeyFile.B),
+            Arrays.asList(Note.forKey(KeyFile.B),
+                    Note.sharp(KeyFile.C),
+                    Note.sharp(KeyFile.D),
+                    Note.forKey(KeyFile.E),
+                    Note.sharp(KeyFile.F), Note.sharp(KeyFile.G)
+                    , Note.sharp(KeyFile.A)) // B major - F#, C#, G#, D#, A#
             // KeyFile.F,  Arrays.asList("F", "G", "A", "Bb", "C", "D", "E")     // F major - Bb
             //  {"Bb", "C", "D", "Eb", "F", "G", "A"},    // Bb major - Bb, Eb
             //  {"Eb", "F", "G", "Ab", "Bb", "C", "D"},   // Eb major - Bb, Eb, Ab
@@ -216,6 +229,10 @@ public class DS7Note {
             }
         }
         return new ArrayList<>();
+    }
+
+    public List<Note> getScaleForKey(KeyFile key) {
+        return majorScales.get(Note.forKey(key));
     }
 
 }
