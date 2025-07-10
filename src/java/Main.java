@@ -1,3 +1,4 @@
+import ui.CircleOfFifthsComponent;
 import ui.CircleOfFifthsPanel;
 import ui.DiatonicScalePanel;
 

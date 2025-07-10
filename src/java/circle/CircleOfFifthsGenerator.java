@@ -93,7 +93,7 @@ public class CircleOfFifthsGenerator {
         } else if (requestedKey.isMinor()) {
             for (int i = 0; i < MINOR_KEYS.length; i++) {
                 CircleOfFifthsKeyFile minorKey = MINOR_KEYS[i];
-                if (minorKey.equals( requestedKey.getKeyFile())) {
+                if (minorKey.equals( requestedKey)) {
                  //   highlightTonic = minors[i];
                   //  highlightDiminished = diminished[i];
                     if (i == 0) {

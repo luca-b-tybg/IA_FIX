@@ -8,14 +8,16 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class CircleOfFifthsPanel extends JPanel {
+public class CircleOfFifthsComponent extends JPanel {
     private static final int RADIUS_ADJUSTMENT = 60;
-    public CircleOfFifthsKeyFile selectedKey;
+    public List<CircleOfFifthsKeyFile> selectedKeys = new ArrayList<>();
 
 
-    public CircleOfFifthsPanel() {
+    public CircleOfFifthsComponent() {
         this.setLayout(null);
     }
 
@@ -33,18 +35,31 @@ public class CircleOfFifthsPanel extends JPanel {
         renderLabels(CircleOfFifthsGenerator.DIMINISHED_KEYS, 3);
     }
 
+    private Set<CircleOfFifthsKeyFile> getAllSelected () {
+        Set <CircleOfFifthsKeyFile> all = new HashSet<>();
+        for (CircleOfFifthsKeyFile keyFile : selectedKeys) {
+            all.addAll(CircleOfFifthsGenerator.select(keyFile));
+        }
+        return all;
+    }
+
+    private boolean isSelectedRoot(CircleOfFifthsKeyFile keyFile) {
+        return selectedKeys.contains(keyFile);
+    }
+
     public void renderLabels(CircleOfFifthsKeyFile[] keys, int circleLevel) {
-        List<CircleOfFifthsKeyFile> selectedKeys = selectedKey != null ? CircleOfFifthsGenerator.select(selectedKey) : new ArrayList<>();
+
+        Set <CircleOfFifthsKeyFile> selectedKeys = getAllSelected();
         for (int i = 0; i < keys.length; i++) {
             var scale = keys[i];
             double angle = Math.toRadians((360 / 12.) * i - 90);
             var keyLabel = new JLabel(scale.toString());
             keyLabel.setFont(new Font("Default", Font.BOLD, 14));
             keyLabel.setSize(50, 16);
-            if (selectedKey != null && selectedKey.toString().equals(scale.toString())) {
+            if (isSelectedRoot(scale)) {
                 keyLabel.setForeground(Color.RED);
                 keyLabel.setFont(new Font("Default", Font.BOLD, 16));
-            }
+            } else
 
             if (selectedKeys.contains(scale)) {
                 keyLabel.setForeground(new Color(33, 36, 209));
@@ -58,7 +73,7 @@ public class CircleOfFifthsPanel extends JPanel {
                 keyLabel.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        CircleOfFifthsPanel.this.selectedKey = scale;
+                        CircleOfFifthsComponent.this.selectedKeys.add( scale);
                         repaint();
                     }
 
@@ -90,4 +105,8 @@ public class CircleOfFifthsPanel extends JPanel {
     }
 
 
+    public void reset() {
+        selectedKeys.clear();
+        repaint();
+    }
 }

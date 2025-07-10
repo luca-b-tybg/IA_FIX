@@ -6,7 +6,6 @@ import scale.Mode;
 import scale.OctaveRange;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,10 +26,10 @@ public class DiatonicScaleInputsPanel extends JPanel {
 
     private void onParamChanged() {
         try {
-            for(Component c : startingOctaveInput.getComponents()) {
-                if(c instanceof JRadioButton ) {
+            for (Component c : startingOctaveInput.getComponents()) {
+                if (c instanceof JRadioButton) {
                     JRadioButton b = (JRadioButton) c;
-                    if(Integer.parseInt(b.getText()) > getEndOctave()) {
+                    if (Integer.parseInt(b.getText()) > getEndOctave()) {
                         b.setEnabled(false);
                     } else {
                         b.setEnabled(true);
@@ -38,10 +37,10 @@ public class DiatonicScaleInputsPanel extends JPanel {
                 }
             }
 
-            for(Component c : endingOctaveInput.getComponents()) {
-                if(c instanceof JRadioButton ) {
+            for (Component c : endingOctaveInput.getComponents()) {
+                if (c instanceof JRadioButton) {
                     JRadioButton b = (JRadioButton) c;
-                    if(Integer.parseInt(b.getText()) < getStartOctave()) {
+                    if (Integer.parseInt(b.getText()) < getStartOctave()) {
                         b.setEnabled(false);
                     } else {
                         b.setEnabled(true);
@@ -112,7 +111,6 @@ public class DiatonicScaleInputsPanel extends JPanel {
         });
         setPreferredSize(new Dimension(300, 300));
         setLayout(null);
-        setBorder(new LineBorder(Color.BLUE));
 
         addLabelAndField("Starting octave:", 30, startingOctaveInput);
         addLabelAndField("Ending octave:", 70, endingOctaveInput);
