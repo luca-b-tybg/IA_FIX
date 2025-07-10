@@ -25,5 +25,6 @@ public class Main {
         tabbedPane.addTab("Diatonic Scale Generator", new DiatonicScalePanel());
         frame.add(tabbedPane);
         frame.setVisible(true);
+        //some change 2
     }
 }
