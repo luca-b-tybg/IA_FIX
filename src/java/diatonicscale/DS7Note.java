@@ -105,8 +105,15 @@ public class DS7Note {
                     Note.sharp(KeyFile.D),
                     Note.forKey(KeyFile.E),
                     Note.sharp(KeyFile.F), Note.sharp(KeyFile.G)
-                    , Note.sharp(KeyFile.A)) // B major - F#, C#, G#, D#, A#
-            // KeyFile.F,  Arrays.asList("F", "G", "A", "Bb", "C", "D", "E")     // F major - Bb
+                    , Note.sharp(KeyFile.A)), // B major - F#, C#, G#, D#, A#
+            Note.forKey(KeyFile.F),
+            Arrays.asList(Note.forKey(KeyFile.F),
+                    Note.forKey(KeyFile.G),
+                    Note.forKey(KeyFile.A),
+                    Note.flat(KeyFile.B),
+                    Note.forKey(KeyFile.C),
+                    Note.forKey(KeyFile.D),
+                    Note.forKey(KeyFile.E))     // F major - Bb
             //  {"Bb", "C", "D", "Eb", "F", "G", "A"},    // Bb major - Bb, Eb
             //  {"Eb", "F", "G", "Ab", "Bb", "C", "D"},   // Eb major - Bb, Eb, Ab
             //  {"Ab", "Bb", "C", "Db", "Eb", "F", "G"}   // Ab major - Bb, Eb, Ab, Db

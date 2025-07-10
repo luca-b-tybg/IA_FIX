@@ -21,6 +21,14 @@ public class Note {
         return n;
     }
 
+    public boolean isFlat() {
+        return isFlat;
+    }
+
+    public static Note flat(KeyFile key) {
+        return new Note(key, true, false);
+    }
+
     public static Note fromString(String spec) {
        String  key =   String.valueOf (spec.charAt(0));
        boolean isSharp = spec.contains("#");

@@ -27,6 +27,27 @@ public class DiatonicScaleInputsPanel extends JPanel {
 
     private void onParamChanged() {
         try {
+            for(Component c : startingOctaveInput.getComponents()) {
+                if(c instanceof JRadioButton ) {
+                    JRadioButton b = (JRadioButton) c;
+                    if(Integer.parseInt(b.getText()) > getEndOctave()) {
+                        b.setEnabled(false);
+                    } else {
+                        b.setEnabled(true);
+                    }
+                }
+            }
+
+            for(Component c : endingOctaveInput.getComponents()) {
+                if(c instanceof JRadioButton ) {
+                    JRadioButton b = (JRadioButton) c;
+                    if(Integer.parseInt(b.getText()) < getStartOctave()) {
+                        b.setEnabled(false);
+                    } else {
+                        b.setEnabled(true);
+                    }
+                }
+            }
             DiatonicScaleInputs userInputResult = new DiatonicScaleInputs(new OctaveRange(octRange[0], octRange[1]),
                     (KeyFile) keyInputCb.getSelectedItem(),
                     (Mode) tonalityInputCb.getSelectedItem());
@@ -41,7 +62,16 @@ public class DiatonicScaleInputsPanel extends JPanel {
 
     }
 
-    private JPanel getOctaveRange(int from, int to, int octaveIndex) {
+    private int getEndOctave() {
+        return octRange[1];
+    }
+
+    private int getStartOctave() {
+        return octRange[0];
+    }
+
+
+    private JPanel getOctaveRangePanel(int from, int to, int octaveIndex) {
         JPanel container = new JPanel(new FlowLayout());
         container.setPreferredSize(new Dimension(300, 60));
         ButtonGroup group = new ButtonGroup();
@@ -66,8 +96,8 @@ public class DiatonicScaleInputsPanel extends JPanel {
     }
 
     public DiatonicScaleInputsPanel() {
-        startingOctaveInput = getOctaveRange(2, 5, 0); // Starting octave
-        endingOctaveInput = getOctaveRange(3, 6, 1); // Ending octave
+        startingOctaveInput = getOctaveRangePanel(2, 5, 0); // Starting octave
+        endingOctaveInput = getOctaveRangePanel(3, 6, 1); // Ending octave
         keyInputCb.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
