@@ -6,37 +6,18 @@ import scale.Note;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 
-class ScoreLine {
-    private KeyFile keyFile;
-    private boolean isVisible = true;
-
-    public ScoreLine(KeyFile keyFile) {
-        this(keyFile, true);
-    }
-
-    public ScoreLine(KeyFile keyFile, boolean isVisible) {
-        this.keyFile = keyFile;
-        this.isVisible = isVisible;
-    }
-
-    public KeyFile getKeyFile() {
-        return keyFile;
-    }
-
-    public boolean isVisible() {
-        return isVisible;
-    }
-}
 
 public class ScorePanel extends JPanel {
 
-    private static final int SCORE_SPACE = 20;
+    private static final int SCORE_LINE_SPACE = 20;
     private static final int NOTE_GAP_SPACE = 45;
+    private static final int SCORE_LINE_COUNT = 7;
+    private final int SCORE_TOP_SPACE = 360;
+
     private static Map<KeyFile, Double> KEYS_SCORE_POSITIONS = Map.of(
             KeyFile.C, -1.,
             KeyFile.D, -0.5,
@@ -58,23 +39,9 @@ public class ScorePanel extends JPanel {
     private static String FLAT_SYMBOL = "♭";
     private static String SHARP_SYMBOL = "♯";
 
-
     private JLabel clefIcon = new JLabel();
     private ImageIcon fullNoteImage;
     private ImageIcon crossNoteImage;
-
-
-
-    private java.util.List<ScoreLine> lines = Arrays.asList(
-            new ScoreLine(KeyFile.C, false),
-            new ScoreLine(KeyFile.D, false),
-            new ScoreLine(KeyFile.E),
-            new ScoreLine(KeyFile.F),
-            new ScoreLine(KeyFile.G),
-            new ScoreLine(KeyFile.A),
-            new ScoreLine(KeyFile.B)
-    );
-
 
 
     public ScorePanel() {
@@ -85,7 +52,7 @@ public class ScorePanel extends JPanel {
         crossNoteImage = new ImageIcon(getResource("music_note-dash.png"));
         clefIcon.setIcon(clefIconImage);
         clefIcon.setSize(new Dimension(50, 127));
-        clefIcon.setLocation(10, SCORE_PREFIX);
+        clefIcon.setLocation(10, SCORE_TOP_SPACE);
 
     }
 
@@ -95,16 +62,12 @@ public class ScorePanel extends JPanel {
 
     public double getStartScorePosition(java.util.List<Note> notes) {
         Note firstNote = notes.getFirst();
-        return switch (firstNote.getKey()) {
-          //  case KeyFile.C -> -1.;
-           // case KeyFile.D -> -0.5;
-           // case KeyFile.B -> -1.5;
-
-            default -> KEYS_SCORE_POSITIONS.get(firstNote.getKey());
-        };
+        return KEYS_SCORE_POSITIONS.get(firstNote.getKey());
     }
 
     int cleveSymbolCount = 0;
+    private Set<Note> sharpNotes = new HashSet<>();
+    private Set<Note> flatNotes = new HashSet<>();
 
     private void showCleveSymbol(double linePosition, String symbol, int size) {
         JLabel label = new JLabel(symbol);
@@ -115,23 +78,29 @@ public class ScorePanel extends JPanel {
         this.add(label);
     }
 
-    private void showSharpSymbol(double linePosition) {
-     //   double linePosition = KEYS_SCORE_POSITIONS.get(note.getKey());
-        showCleveSymbol(linePosition, SHARP_SYMBOL, 24);
+    private void showSharpSymbol(Note note) {
+        if (!sharpNotes.contains(note)) {
+            double linePosition = SYMBOLS_SCORE_POSITIONS.get(note.getKey());
+            showCleveSymbol(linePosition, SHARP_SYMBOL, 24);
+            sharpNotes.add(note);
+        }
     }
 
-    public void showFlatSymbol(double linePosition) {
-        showCleveSymbol(linePosition, FLAT_SYMBOL, 34);
+    public void showFlatSymbol(Note note) {
+        if (!flatNotes.contains(note)) {
+            double linePosition = SYMBOLS_SCORE_POSITIONS.get(note.getKey());
+            showCleveSymbol(linePosition, FLAT_SYMBOL, 34);
+            flatNotes.add(note);
+        }
     }
 
     private void resetView() {
         this.removeAll();
+        sharpNotes.clear();
+        flatNotes.clear();
         cleveSymbolCount = 0;
     }
 
-    private  List<Note> getNoteForKey(List <Note> notes , KeyFile key) {
-        return notes.stream().filter(note-> note.getKey() == key).collect(Collectors.toList());
-    }
 
     public void setNotes(java.util.List<Note> notes) {
         resetView();
@@ -140,39 +109,27 @@ public class ScorePanel extends JPanel {
         double notePosition = getStartScorePosition(notes);
 
 
-
         for (Note note : notes) {
-            //double labelPosition = KEYS_SCORE_POSITIONS.get(note.getKey());
-          //  int lineIndex =0;
-                for (ScoreLine scoreLine : lines) {
-                  //  Note note = getNoteForKey(notes,  scoreLine.getKeyFile()).getFirst();
-                if (scoreLine.getKeyFile() == note.getKey()) {
-                    JLabel noteLabel = new JLabel();
-                    if (note.getKey() == KeyFile.C && notePosition < 0) {
-                        noteLabel.setIcon(crossNoteImage);
-                    } else {
-                        noteLabel.setIcon(fullNoteImage);
-                    }
 
-                    if (note.isSharp) {
-
-                        showSharpSymbol(SYMBOLS_SCORE_POSITIONS.get(note.getKey()) );
-                    }
-
-                    if(note.isFlat()) {
-                        showFlatSymbol(SYMBOLS_SCORE_POSITIONS.get(note.getKey()));
-                    }
-
-
-                    noteLabel.setLocation(120 + (NOTE_GAP_SPACE * column), getNoteScorePosition(notePosition) - noteHeight);
-                    noteLabel.setSize(30, noteHeight);
-                    this.add(noteLabel);
-                    column++;
-                    notePosition += 0.5;
-                    //lineIndex ++;
-                    break;
-                }
+            JLabel noteLabel = new JLabel();
+            if (note.getKey() == KeyFile.C && notePosition < 0) {
+                noteLabel.setIcon(crossNoteImage);
+            } else {
+                noteLabel.setIcon(fullNoteImage);
             }
+            if (note.isSharp) {
+                showSharpSymbol(note);
+            }
+
+            if (note.isFlat()) {
+                showFlatSymbol(note);
+            }
+            noteLabel.setLocation(120 + (NOTE_GAP_SPACE * column), getNoteScorePosition(notePosition) - noteHeight);
+            noteLabel.setSize(30, noteHeight);
+            this.add(noteLabel);
+            column++;
+            notePosition += 0.5;
+
         }
         add(this.clefIcon);
         this.repaint();
@@ -180,32 +137,28 @@ public class ScorePanel extends JPanel {
 
 
     public int getNoteScorePosition(double linePosition) {
-        //double position = KEYS_SCORE_POSITIONS.get(note.getKey());
-        int bottomLinePosition = (lines.size() - 1) * SCORE_SPACE;
-        return bottomLinePosition + SCORE_PREFIX - (int) (SCORE_SPACE * linePosition);
+        int bottomLinePosition = (SCORE_LINE_COUNT - 1) * SCORE_LINE_SPACE;
+        return bottomLinePosition + SCORE_TOP_SPACE - (int) (SCORE_LINE_SPACE * linePosition);
     }
 
-    private int SCORE_PREFIX = 100;
+
 
     private int getLineY(int lineIndex) {
-        return SCORE_PREFIX + SCORE_SPACE * lineIndex;
+        return SCORE_TOP_SPACE + SCORE_LINE_SPACE * (lineIndex-1);
     }
 
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         ((Graphics2D) g).setStroke(new BasicStroke(2));
-        int lineIndex = -1;
-        for (ScoreLine line : lines) {
-            if (line.isVisible()) {
-                g.drawLine(10, getLineY(lineIndex), this.getWidth() - 10, getLineY(lineIndex));
+        for (int i = 0; i < SCORE_LINE_COUNT; i++) {
+            if (i >= 2) { //not rendering first 2 lines
+                g.drawLine(10, getLineY(i), this.getWidth() - 10, getLineY(i));
             }
-            lineIndex++;
         }
 
-        g.drawLine(10, SCORE_PREFIX + SCORE_SPACE, 10, SCORE_PREFIX + SCORE_SPACE * 5);
-        g.drawLine(this.getWidth() - 10, SCORE_PREFIX + SCORE_SPACE, this.getWidth() - 10, SCORE_PREFIX + SCORE_SPACE * 5);
+        g.drawLine(10, SCORE_TOP_SPACE + SCORE_LINE_SPACE, 10, SCORE_TOP_SPACE + SCORE_LINE_SPACE * 5);
+        g.drawLine(this.getWidth() - 10, SCORE_TOP_SPACE + SCORE_LINE_SPACE, this.getWidth() - 10, SCORE_TOP_SPACE + SCORE_LINE_SPACE * 5);
     }
 }

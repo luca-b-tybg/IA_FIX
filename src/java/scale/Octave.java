@@ -18,6 +18,10 @@ public class Octave {
 
     }
 
+    public List<Note> getNotes() {
+        return notes;
+    }
+
     @Override
     public String toString() {
         return notes.stream().map((n)-> n.toString() + position).toList().toString();

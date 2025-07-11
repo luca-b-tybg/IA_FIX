@@ -3,9 +3,7 @@ package circle;
 import scale.KeyFile;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import static circle.CircleOfFifthsKeyFile.*;
 

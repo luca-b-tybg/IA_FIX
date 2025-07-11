@@ -29,7 +29,7 @@ public class DiatonicScaleInputsPanel extends JPanel {
             for (Component c : startingOctaveInput.getComponents()) {
                 if (c instanceof JRadioButton) {
                     JRadioButton b = (JRadioButton) c;
-                    if (Integer.parseInt(b.getText()) > getEndOctave()) {
+                    if (Integer.parseInt(b.getText()) >= getEndOctave()) {
                         b.setEnabled(false);
                     } else {
                         b.setEnabled(true);
@@ -40,7 +40,7 @@ public class DiatonicScaleInputsPanel extends JPanel {
             for (Component c : endingOctaveInput.getComponents()) {
                 if (c instanceof JRadioButton) {
                     JRadioButton b = (JRadioButton) c;
-                    if (Integer.parseInt(b.getText()) < getStartOctave()) {
+                    if (Integer.parseInt(b.getText()) <= getStartOctave()) {
                         b.setEnabled(false);
                     } else {
                         b.setEnabled(true);

@@ -14,7 +14,7 @@ import java.util.Map;
  * It handles the proper calculation of notes and applies necessary sharps/flats
  * to maintain the correct tonal relationships for the selected mode.
  */
-public class DS7Note {
+public class DS7Scales {
     // Core components for scale generation
     private KeyFile key;                        // The tonic/root note of the scale (e.g., C, D, E, etc.)
     private Mode mode;                     // The mode of the scale (Ionian/Major, Dorian, Phrygian, etc.)
@@ -122,7 +122,7 @@ public class DS7Note {
     //   private String[] scaleTones = new String[7];        // Semitone pattern for the selected mode
     private Integer[] organisedCTones = new Integer[7];   // Reorganized semitone pattern of C major
 
-    public DS7Note(KeyFile key, Mode mode) {
+    public DS7Scales(KeyFile key, Mode mode) {
         this.key = key;
         this.mode = mode;
         // Find where our tonic is in the C major scale
