@@ -14,8 +14,11 @@ import java.util.Set;
 public class ScorePanel extends JPanel {
 
     private static final int SCORE_LINE_SPACE = 20;
+
     private static final int NOTE_GAP_SPACE = 45;
-    private static final int SCORE_LINE_COUNT = 7;
+
+    private static final int SCORE_LINE_COUNT = 14;
+
     private final int SCORE_TOP_SPACE = 360;
 
     private static Map<KeyFile, Double> KEYS_SCORE_POSITIONS = Map.of(

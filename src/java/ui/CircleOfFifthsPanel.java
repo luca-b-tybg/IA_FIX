@@ -10,7 +10,7 @@ public class CircleOfFifthsPanel extends JPanel {
         public ControlPanel(CircleOfFifthsComponent circleOfFifthsComponent) {
             //  setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
             JButton resetBtn = new JButton("Reset");
-            JButton renderScale = new JButton("Show Scale");
+            JButton renderScale = new JButton("Show Progression");
             renderScale.setEnabled(false);
             resetBtn.addActionListener(_e -> {
                 circleOfFifthsComponent.reset();
