@@ -1,6 +1,5 @@
 package scale;
 
-import java.util.Locale;
 import java.util.Objects;
 
 public class Note {

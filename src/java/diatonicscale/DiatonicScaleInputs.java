@@ -2,14 +2,15 @@ package diatonicscale;
 
 import scale.KeyFile;
 import scale.Mode;
+import scale.Note;
 import scale.OctaveRange;
 
 public class DiatonicScaleInputs {
     private final OctaveRange octRange;
-    private final KeyFile key;
+    private final Note scale;
     private final Mode mode;
 
-    public DiatonicScaleInputs(OctaveRange octRange, KeyFile key, Mode mode) {
+    public DiatonicScaleInputs(OctaveRange octRange, Note scale, Mode mode) {
         if (octRange.octaveStart < 2 || octRange.octaveStart > 5) {
             throw new RuntimeException("Starting octave must be between 2 and 5.");
         }
@@ -17,19 +18,19 @@ public class DiatonicScaleInputs {
             throw new RuntimeException("Ending octave must be between 3 and 6.");
         }
         this.octRange = octRange;
-        this.key = key;
+        this.scale = scale;
         this.mode = mode;
     }
 
     public OctaveRange getOctRange() {return octRange;}
-    public KeyFile getKey() {return key;}
+    public Note getScale() {return scale;}
     public Mode getMode() {return mode;}
 
     @Override
     public String toString() {
         return "DiatonicScaleInputs{" +
                 "octRange=" + octRange +
-                ", key=" + key +
+                ", key=" + scale +
                 ", mode=" + mode +
                 '}';
     }

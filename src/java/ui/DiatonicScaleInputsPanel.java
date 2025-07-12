@@ -1,8 +1,9 @@
 package ui;
 
+import diatonicscale.DS7Scales;
 import diatonicscale.DiatonicScaleInputs;
-import scale.KeyFile;
 import scale.Mode;
+import scale.Note;
 import scale.OctaveRange;
 
 import javax.swing.*;
@@ -16,7 +17,7 @@ public class DiatonicScaleInputsPanel extends JPanel {
 
     private JPanel startingOctaveInput; // Starting octave
     private JPanel endingOctaveInput; // Ending octave
-    private JComboBox<KeyFile> keyInputCb = new JComboBox<>(KeyFile.values());  // Key
+    private JComboBox<Note> keyInputCb = new JComboBox<>(DS7Scales.getKnownScales());  // Key
     private JComboBox<Mode> tonalityInputCb = new JComboBox<>(Mode.values());  // Tonality/Mode
     private java.util.List<DiatonicScaleParameterListener> parameterListeners = new ArrayList<>();
 
@@ -48,7 +49,7 @@ public class DiatonicScaleInputsPanel extends JPanel {
                 }
             }
             DiatonicScaleInputs userInputResult = new DiatonicScaleInputs(new OctaveRange(octRange[0], octRange[1]),
-                    (KeyFile) keyInputCb.getSelectedItem(),
+                    (Note) keyInputCb.getSelectedItem(),
                     (Mode) tonalityInputCb.getSelectedItem());
             for (DiatonicScaleParameterListener listener : parameterListeners) {
                 listener.onDiatonicScaleParametersChanged(userInputResult);

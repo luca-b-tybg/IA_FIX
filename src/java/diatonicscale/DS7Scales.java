@@ -4,10 +4,7 @@ import scale.KeyFile;
 import scale.Mode;
 import scale.Note;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class generates a 7-note musical scale based on a specified key and mode.
@@ -16,7 +13,7 @@ import java.util.Map;
  */
 public class DS7Scales {
     // Core components for scale generation
-    private KeyFile key;                        // The tonic/root note of the scale (e.g., C, D, E, etc.)
+    private Note key;                        // The tonic/root note of the scale (e.g., C, D, E, etc.)
     private Mode mode;                     // The mode of the scale (Ionian/Major, Dorian, Phrygian, etc.)
     public static List<KeyFile> C_MAJOR_NOTES = Arrays.asList(KeyFile.C, KeyFile.D, KeyFile.E, KeyFile.F, KeyFile.G, KeyFile.A, KeyFile.B);  // Natural notes in C major
     private KeyFile[] cOrganisedScale = new KeyFile[7];  // C major scale reorganized to start from the tonic
@@ -37,92 +34,130 @@ public class DS7Scales {
             Mode.LOCRIAN, Arrays.asList(1, 2, 2, 1, 2, 2, 2)  // Locrian
     );
 
-    //in: key + mode
-    //take mode and search for the list of semitones in the mode
-    private static Map<Note, List<String>> scales = Map.of(
-            Note.forKey(KeyFile.C), Arrays.asList("C", "D", "E", "F", "G", "A", "B"));      // C major - no sharps/flats
-    //{"G", "A", "B", "C", "D", "E", "F#"},     // G major - F#
-    //{"D", "E", "F#", "G", "A", "B", "C#"},    // D major - F#, C#
-    //{"A", "B", "C#", "D", "E", "F#", "G#"},   // A major - F#, C#, G#
-    //{"E", "F#", "G#", "A", "B", "C#", "D#"},  // E major - F#, C#, G#, D#
-    //{"B", "C#", "D#", "E", "F#", "G#", "A#"}, // B major - F#, C#, G#, D#, A#
-    //{"F", "G", "A", "Bb", "C", "D", "E"},     // F major - Bb
-
-    //{"Db", "Eb", "F", "Gb", "Ab", "Bb", "C"},    // Db/C# major
-    //{"Ab", "Bb", "C", "Db", "Eb", "F", "G"},   // Ab/G# major - F#, C#, G#
-    //{"F#", "G#", "A#", "B", "C#", "D#", "E#"},     // F#/Gb major - remember, E# = F
-    //{"Bb", "C", "D", "Eb", "F", "G", "A"}      // Bb/A# major
-    //{"Eb" "F", "G", "Ab", "Bb", "C", "D"}    //  Eb
-
-
     // Known major scales with their correct accidentals for reference
-    private static Map<Note, List<Note>> majorScales = Map.of(
-            Note.forKey(KeyFile.C),
-            Arrays.asList(Note.forKey(KeyFile.C),
-                    Note.forKey(KeyFile.D),
-                    Note.forKey(KeyFile.E),
-                    Note.forKey(KeyFile.F),
-                    Note.forKey(KeyFile.G),
-                    Note.forKey(KeyFile.A),
-                    Note.forKey(KeyFile.B)),     // C major - no sharps/flats
-            Note.forKey(KeyFile.G), Arrays.asList(
-                    Note.forKey(KeyFile.G),
-                    Note.forKey(KeyFile.A),
-                    Note.forKey(KeyFile.B),
-                    Note.forKey(KeyFile.C),
-                    Note.forKey(KeyFile.D),
-                    Note.forKey(KeyFile.E),
-                    Note.sharp(KeyFile.F)),     // G major - F#
-            Note.forKey(KeyFile.D),
-            Arrays.asList(
-                    Note.forKey(KeyFile.D),
-                    Note.forKey(KeyFile.E),
-                    Note.sharp(KeyFile.F),
-                    Note.forKey(KeyFile.G),
-                    Note.forKey(KeyFile.A),
-                    Note.forKey(KeyFile.B),
-                    Note.sharp(KeyFile.C)),   // D major - F#, C#
-            Note.forKey(KeyFile.A),
-            Arrays.asList(
-                    Note.forKey(KeyFile.A),
-                    Note.forKey(KeyFile.B),
-                    Note.sharp(KeyFile.C),
-                    Note.forKey(KeyFile.D),
-                    Note.forKey(KeyFile.E),
-                    Note.sharp(KeyFile.F),
-                    Note.sharp(KeyFile.G)),   // A major - F#, C#, G#
-            Note.forKey(KeyFile.E),
-            Arrays.asList(Note.forKey(KeyFile.E),
-                    Note.sharp(KeyFile.F),
-                    Note.sharp(KeyFile.G),
-                    Note.forKey(KeyFile.A),
-                    Note.forKey(KeyFile.B),
-                    Note.sharp(KeyFile.C),
-                    Note.sharp(KeyFile.D)),  // E major - F#, C#, G#, D#
-            Note.forKey(KeyFile.B),
-            Arrays.asList(Note.forKey(KeyFile.B),
-                    Note.sharp(KeyFile.C),
-                    Note.sharp(KeyFile.D),
-                    Note.forKey(KeyFile.E),
-                    Note.sharp(KeyFile.F), Note.sharp(KeyFile.G)
-                    , Note.sharp(KeyFile.A)), // B major - F#, C#, G#, D#, A#
-            Note.forKey(KeyFile.F),
-            Arrays.asList(Note.forKey(KeyFile.F),
-                    Note.forKey(KeyFile.G),
-                    Note.forKey(KeyFile.A),
-                    Note.flat(KeyFile.B),
-                    Note.forKey(KeyFile.C),
-                    Note.forKey(KeyFile.D),
-                    Note.forKey(KeyFile.E))     // F major - Bb
+    private static Map<Note, List<Note>> majorScales = new LinkedHashMap<>(
+
+
             //  {"Bb", "C", "D", "Eb", "F", "G", "A"},    // Bb major - Bb, Eb
             //  {"Eb", "F", "G", "Ab", "Bb", "C", "D"},   // Eb major - Bb, Eb, Ab
             //  {"Ab", "Bb", "C", "Db", "Eb", "F", "G"}   // Ab major - Bb, Eb, Ab, Db
     );
 
+    static {
+        majorScales.put(
+                Note.forKey(KeyFile.C),
+                Arrays.asList(Note.forKey(KeyFile.C),
+                        Note.forKey(KeyFile.D),
+                        Note.forKey(KeyFile.E),
+                        Note.forKey(KeyFile.F),
+                        Note.forKey(KeyFile.G),
+                        Note.forKey(KeyFile.A),
+                        Note.forKey(KeyFile.B)));     // C major - no sharps/flats
+        majorScales.put(
+                Note.forKey(KeyFile.G), Arrays.asList(
+                        Note.forKey(KeyFile.G),
+                        Note.forKey(KeyFile.A),
+                        Note.forKey(KeyFile.B),
+                        Note.forKey(KeyFile.C),
+                        Note.forKey(KeyFile.D),
+                        Note.forKey(KeyFile.E),
+                        Note.sharp(KeyFile.F)));     // G major - F#
+        majorScales.put(Note.forKey(KeyFile.D),
+                Arrays.asList(
+                        Note.forKey(KeyFile.D),
+                        Note.forKey(KeyFile.E),
+                        Note.sharp(KeyFile.F),
+                        Note.forKey(KeyFile.G),
+                        Note.forKey(KeyFile.A),
+                        Note.forKey(KeyFile.B),
+                        Note.sharp(KeyFile.C)));   // D major - F#, C#
+        majorScales.put(Note.forKey(KeyFile.A),
+                Arrays.asList(
+                        Note.forKey(KeyFile.A),
+                        Note.forKey(KeyFile.B),
+                        Note.sharp(KeyFile.C),
+                        Note.forKey(KeyFile.D),
+                        Note.forKey(KeyFile.E),
+                        Note.sharp(KeyFile.F),
+                        Note.sharp(KeyFile.G)));   // A major - F#, C#, G#
+        majorScales.put(Note.forKey(KeyFile.E),
+                Arrays.asList(Note.forKey(KeyFile.E),
+                        Note.sharp(KeyFile.F),
+                        Note.sharp(KeyFile.G),
+                        Note.forKey(KeyFile.A),
+                        Note.forKey(KeyFile.B),
+                        Note.sharp(KeyFile.C),
+                        Note.sharp(KeyFile.D)));  // E major - F#, C#, G#, D#
+        majorScales.put(Note.forKey(KeyFile.B),
+                Arrays.asList(Note.forKey(KeyFile.B),
+                        Note.sharp(KeyFile.C),
+                        Note.sharp(KeyFile.D),
+                        Note.forKey(KeyFile.E),
+                        Note.sharp(KeyFile.F), Note.sharp(KeyFile.G)
+                        , Note.sharp(KeyFile.A)));// B major - F#, C#, G#, D#, A#
+        majorScales.put(Note.forKey(KeyFile.F),
+                Arrays.asList(Note.forKey(KeyFile.F),
+                        Note.forKey(KeyFile.G),
+                        Note.forKey(KeyFile.A),
+                        Note.flat(KeyFile.B),
+                        Note.forKey(KeyFile.C),
+                        Note.forKey(KeyFile.D),
+                        Note.forKey(KeyFile.E)));     // F major - Bb
+        majorScales.put(Note.flat(KeyFile.D),
+                Arrays.asList(
+                        Note.flat(KeyFile.D),
+                        Note.flat(KeyFile.E),
+                        Note.forKey(KeyFile.F),
+                        Note.flat(KeyFile.G),
+                        Note.flat(KeyFile.A),
+                        Note.flat(KeyFile.B),
+                        Note.forKey(KeyFile.C)));// Db/C# major - //{"Db", "Eb", "F", "Gb", "Ab", "Bb", "C"},
+        majorScales.put(Note.flat(KeyFile.A), Arrays.asList(
+                Note.flat(KeyFile.A),
+                Note.flat(KeyFile.B),
+                Note.forKey(KeyFile.C),
+                Note.flat(KeyFile.D),
+                Note.flat(KeyFile.E),
+                Note.forKey(KeyFile.F),
+                Note.forKey(KeyFile.G)//{"Ab", "Bb", "C", "Db", "Eb", "F", "G"},   // Ab/G# major - F#, C#, G#
+        ));
+        majorScales.put(Note.sharp(KeyFile.F), Arrays.asList(
+                Note.sharp(KeyFile.F),
+                Note.sharp(KeyFile.G),
+                Note.sharp(KeyFile.A),
+                Note.forKey(KeyFile.B),
+                Note.sharp(KeyFile.C),
+                Note.sharp(KeyFile.D),
+                Note.forKey(KeyFile.E) //{"F#", "G#", "A#", "B", "C#", "D#", "E#"},     // F#/Gb major - remember, E# = F
+        ));
+        majorScales.put(Note.flat(KeyFile.B),
+                Arrays.asList(Note.flat(KeyFile.B),
+                        Note.forKey(KeyFile.C),
+                        Note.forKey(KeyFile.D),
+                        Note.flat(KeyFile.E),
+                        Note.forKey(KeyFile.F),
+                        Note.forKey(KeyFile.G),
+                        Note.forKey(KeyFile.A))); //{"Bb", "C", "D", "Eb", "F", "G", "A"}      // Bb/A# major
+        majorScales.put(Note.flat(KeyFile.E),
+                Arrays.asList(Note.flat(KeyFile.E),
+                        Note.forKey(KeyFile.F),
+                        Note.forKey(KeyFile.G),
+                        Note.flat(KeyFile.A),
+                        Note.flat(KeyFile.B),
+                        Note.forKey(KeyFile.C),
+                        Note.forKey(KeyFile.D)));//{"Eb" "F", "G", "Ab", "Bb", "C", "D"}    //  Eb
+    }
+
+    public static Note[] getKnownScales() {
+        Note[] entries = majorScales.keySet().toArray(new Note[0]);
+        Arrays.sort(entries, Comparator.comparing(Note::toString));
+        return entries;
+    }
+
     //   private String[] scaleTones = new String[7];        // Semitone pattern for the selected mode
     private Integer[] organisedCTones = new Integer[7];   // Reorganized semitone pattern of C major
 
-    public DS7Scales(KeyFile key, Mode mode) {
+    public DS7Scales(Note key, Mode mode) {
         this.key = key;
         this.mode = mode;
         // Find where our tonic is in the C major scale
@@ -238,8 +273,8 @@ public class DS7Scales {
         return new ArrayList<>();
     }
 
-    public List<Note> getScaleForKey(KeyFile key) {
-        return majorScales.get(Note.forKey(key));
+    public List<Note> getScaleForKey(Note scaleNote) {
+        return majorScales.get(scaleNote);
     }
 
 }

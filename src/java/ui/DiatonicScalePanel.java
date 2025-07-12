@@ -26,9 +26,9 @@ public class DiatonicScalePanel extends JPanel implements DiatonicScaleParameter
     @Override
     public void onDiatonicScaleParametersChanged(DiatonicScaleInputs diatonicScaleInputs) {
         System.out.println("onDiatonicScaleParametersChanged" + diatonicScaleInputs);
-        var ds7Scales = new DS7Scales(diatonicScaleInputs.getKey(), diatonicScaleInputs.getMode());
+        var ds7Scales = new DS7Scales(diatonicScaleInputs.getScale(), diatonicScaleInputs.getMode());
         //TODO: generate the new scale using the algorithm for now we render only the majors
-        var notes = ds7Scales.getScaleForKey(diatonicScaleInputs.getKey());
+        var notes = ds7Scales.getScaleForKey(diatonicScaleInputs.getScale());
         var octaves = OctaveGenerator.generateFullScaleWithOctaves(diatonicScaleInputs.getOctRange(), notes);
 
 
