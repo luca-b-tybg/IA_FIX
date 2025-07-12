@@ -3,13 +3,10 @@ package ui;
 import diatonicscale.DS7Scales;
 import diatonicscale.DiatonicScaleInputs;
 import scale.OctaveGenerator;
-import scale.Note;
 import scale.Octave;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DiatonicScalePanel extends JPanel implements DiatonicScaleParameterListener {
     private final DiatonicScaleInputsPanel inputParamsPanel = new DiatonicScaleInputsPanel();
@@ -33,12 +30,9 @@ public class DiatonicScalePanel extends JPanel implements DiatonicScaleParameter
         //TODO: generate the new scale using the algorithm for now we render only the majors
         var notes = ds7Scales.getScaleForKey(diatonicScaleInputs.getKey());
         var octaves = OctaveGenerator.generateFullScaleWithOctaves(diatonicScaleInputs.getOctRange(), notes);
-        List<Note> allOctaveNotes = new ArrayList<>();
-        for (Octave octave : octaves) {
-            allOctaveNotes.addAll(octave.getNotes());
-        }
 
-        scorePanel.setNotes(allOctaveNotes);
+
+        scorePanel.setOctaves(diatonicScaleInputs.getOctRange(), octaves);
         for (Octave s : octaves) {
             System.out.println(s);
         }

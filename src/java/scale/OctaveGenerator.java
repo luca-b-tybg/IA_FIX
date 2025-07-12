@@ -33,8 +33,9 @@ public class OctaveGenerator {
                     octave = new Octave(currentOctave);
                 }
             }
-            octave.add(notes.getFirst());
+
         }
+        octave.add(notes.getFirst());
         allOctaves.add(octave);
 
         return allOctaves;

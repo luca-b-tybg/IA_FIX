@@ -18,7 +18,7 @@ public class DS7Scales {
     // Core components for scale generation
     private KeyFile key;                        // The tonic/root note of the scale (e.g., C, D, E, etc.)
     private Mode mode;                     // The mode of the scale (Ionian/Major, Dorian, Phrygian, etc.)
-    private static List<KeyFile> C_MAJOR_NOTES = Arrays.asList(KeyFile.C, KeyFile.D, KeyFile.E, KeyFile.F, KeyFile.G, KeyFile.A, KeyFile.B);  // Natural notes in C major
+    public static List<KeyFile> C_MAJOR_NOTES = Arrays.asList(KeyFile.C, KeyFile.D, KeyFile.E, KeyFile.F, KeyFile.G, KeyFile.A, KeyFile.B);  // Natural notes in C major
     private KeyFile[] cOrganisedScale = new KeyFile[7];  // C major scale reorganized to start from the tonic
     private Note[] organisedScale = new Note[7];   // Final scale with appropriate sharps/flats applied
 

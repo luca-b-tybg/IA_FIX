@@ -22,6 +22,10 @@ public class Octave {
         return notes;
     }
 
+    public int getPosition() {
+        return position;
+    }
+
     @Override
     public String toString() {
         return notes.stream().map((n)-> n.toString() + position).toList().toString();

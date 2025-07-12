@@ -1,7 +1,10 @@
 package ui;
 
+import diatonicscale.DS7Scales;
 import scale.KeyFile;
 import scale.Note;
+import scale.Octave;
+import scale.OctaveRange;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,32 +20,26 @@ public class ScorePanel extends JPanel {
 
     private static final int NOTE_GAP_SPACE = 45;
 
-    private static final int SCORE_LINE_COUNT = 14;
+    private static final int SCORE_LINE_COUNT = 13;
 
     private final int SCORE_TOP_SPACE = 360;
 
-    private static Map<KeyFile, Double> KEYS_SCORE_POSITIONS = Map.of(
-            KeyFile.C, -1.,
-            KeyFile.D, -0.5,
-            KeyFile.E, 0.,
-            KeyFile.F, 0.5,
-            KeyFile.G, 2.,
-            KeyFile.B, -1.5,
-            KeyFile.A, 1.5);
 
-    private static Map<KeyFile, Double> SYMBOLS_SCORE_POSITIONS = Map.of(
-            KeyFile.C, 2.5,
-            KeyFile.D, 3.,
-            KeyFile.E, 3.5,
-            KeyFile.F, 4.,
-            KeyFile.G, 4.5,
-            KeyFile.B, 2.,
-            KeyFile.A, 1.5);
+    private static Map<KeyFile, Integer> SYMBOLS_SCORE_POSITIONS = Map.of(
+            KeyFile.C, 7,
+            KeyFile.D, 8,
+            KeyFile.E, 9,
+            KeyFile.F, 4,
+            KeyFile.G, 5,
+            KeyFile.B, 7,
+            KeyFile.A, 6);
 
     private static String FLAT_SYMBOL = "♭";
     private static String SHARP_SYMBOL = "♯";
 
     private JLabel clefIcon = new JLabel();
+    private JLabel baseClefIcon = new JLabel();
+
     private ImageIcon fullNoteImage;
     private ImageIcon crossNoteImage;
 
@@ -50,23 +47,28 @@ public class ScorePanel extends JPanel {
     public ScorePanel() {
         setLayout(null);
 
-        ImageIcon clefIconImage = new ImageIcon(getResource("clef_small.png"));
+
         fullNoteImage = new ImageIcon(getResource("music_note.png"));
         crossNoteImage = new ImageIcon(getResource("music_note-dash.png"));
+        // clef icon setup
+        ImageIcon clefIconImage = new ImageIcon(getResource("clef_small.png"));
         clefIcon.setIcon(clefIconImage);
         clefIcon.setSize(new Dimension(50, 127));
         clefIcon.setLocation(10, SCORE_TOP_SPACE);
 
+        // base clef icon setup
+        ImageIcon baseClefIconImage = new ImageIcon(getResource("base_clef.png"));
+        baseClefIcon.setIcon(baseClefIconImage);
+        baseClefIcon.setSize(new Dimension(51, 48));
+        baseClefIcon.setLocation(10, (SCORE_TOP_SPACE) + SCORE_LINE_SPACE * 8);
+
     }
+
 
     private URL getResource(String resourceName) {
         return getClass().getResource("/" + resourceName);
     }
 
-    public double getStartScorePosition(java.util.List<Note> notes) {
-        Note firstNote = notes.getFirst();
-        return KEYS_SCORE_POSITIONS.get(firstNote.getKey());
-    }
 
     int cleveSymbolCount = 0;
     private Set<Note> sharpNotes = new HashSet<>();
@@ -76,7 +78,7 @@ public class ScorePanel extends JPanel {
         JLabel label = new JLabel(symbol);
         label.setFont(new Font("Default", Font.BOLD, size));
         label.setSize(40, 40);
-        label.setLocation(60 + (cleveSymbolCount * 15), getNoteScorePosition(linePosition) - 40);
+        label.setLocation(60 + (cleveSymbolCount * 15), getNoteScorePosition(null, (int) linePosition) - 40);
         cleveSymbolCount++;
         this.add(label);
     }
@@ -104,64 +106,94 @@ public class ScorePanel extends JPanel {
         cleveSymbolCount = 0;
     }
 
+    private int getStartScorePosition(OctaveRange octaveRange, Octave octave) {
+        int octaveCount = Math.abs(4 - octaveRange.octaveStart);
+        int direction = Integer.compare(octaveRange.octaveStart, 4);
 
-    public void setNotes(java.util.List<Note> notes) {
+        Note startNote = octave.getNotes().getFirst();
+        int keyPosition = DS7Scales.C_MAJOR_NOTES.indexOf(startNote.getKey());
+
+
+        return keyPosition + (direction * ((7 * octaveCount)));
+
+    }
+
+    public void setOctaves(OctaveRange octaveRange, java.util.List<Octave> octaves) {
         resetView();
-        int noteHeight = 100;
+        int noteHeight = 80;
         int column = 0;
-        double notePosition = getStartScorePosition(notes);
+        int notePosition = getStartScorePosition(octaveRange, octaves.getFirst());
 
+        for (Octave octave : octaves) {
+            for (Note note : octave.getNotes()) {
+                JLabel noteLabel = new JLabel();
+                if (note.getKey() == KeyFile.C && (octave.getPosition() == 2 || octave.getPosition() == 4)) {
+                    noteLabel.setIcon(crossNoteImage);
+                } else {
+                    noteLabel.setIcon(fullNoteImage);
+                }
+                if (note.isSharp) {
+                    showSharpSymbol(note);
+                }
 
-        for (Note note : notes) {
+                if (note.isFlat()) {
+                    showFlatSymbol(note);
+                }
+                int noteXpos = 120 + (NOTE_GAP_SPACE * column);
+                noteLabel.setLocation(noteXpos, getNoteScorePosition(note, notePosition) - 50);
+                noteLabel.setSize(30, noteHeight);
+                showNoteText(octave.getPosition(), noteXpos, note);
 
-            JLabel noteLabel = new JLabel();
-            if (note.getKey() == KeyFile.C && notePosition < 0) {
-                noteLabel.setIcon(crossNoteImage);
-            } else {
-                noteLabel.setIcon(fullNoteImage);
+                this.add(noteLabel);
+                column++;
+                notePosition++;
+
             }
-            if (note.isSharp) {
-                showSharpSymbol(note);
-            }
-
-            if (note.isFlat()) {
-                showFlatSymbol(note);
-            }
-            noteLabel.setLocation(120 + (NOTE_GAP_SPACE * column), getNoteScorePosition(notePosition) - noteHeight);
-            noteLabel.setSize(30, noteHeight);
-            this.add(noteLabel);
-            column++;
-            notePosition += 0.5;
-
         }
         add(this.clefIcon);
+        add(this.baseClefIcon);
+
         this.repaint();
     }
 
-
-    public int getNoteScorePosition(double linePosition) {
-        int bottomLinePosition = (SCORE_LINE_COUNT - 1) * SCORE_LINE_SPACE;
-        return bottomLinePosition + SCORE_TOP_SPACE - (int) (SCORE_LINE_SPACE * linePosition);
+    private void showNoteText(int octave, int xpos,  Note note) {
+        JLabel x = new JLabel(note.getKey().toString() + octave);
+        x.setLocation(xpos, SCORE_TOP_SPACE + SCORE_LINE_SPACE * 12);
+        x.setSize(new Dimension(30, 30));
+        add(x);
     }
 
+    private int getC4Position() {
+        return SCORE_LINE_SPACE * 6;
+    }
+
+    public int getNoteScorePosition(Note n, int scaleLine) {
+        double linePosition = scaleLine * 0.5;
+        return ((int) (getC4Position() + SCORE_TOP_SPACE - (SCORE_LINE_SPACE * linePosition)));
+    }
 
 
     private int getLineY(int lineIndex) {
-        return SCORE_TOP_SPACE + SCORE_LINE_SPACE * (lineIndex-1);
+        return SCORE_TOP_SPACE + SCORE_LINE_SPACE * lineIndex;
     }
 
+    private boolean isLineVisible(int lineIndex) {
+        return ((lineIndex > 1) && lineIndex != 7);
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         ((Graphics2D) g).setStroke(new BasicStroke(2));
         for (int i = 0; i < SCORE_LINE_COUNT; i++) {
-            if (i >= 2) { //not rendering first 2 lines
+            if (isLineVisible(i)) { //not rendering first 2 lines
                 g.drawLine(10, getLineY(i), this.getWidth() - 10, getLineY(i));
             }
         }
 
-        g.drawLine(10, SCORE_TOP_SPACE + SCORE_LINE_SPACE, 10, SCORE_TOP_SPACE + SCORE_LINE_SPACE * 5);
-        g.drawLine(this.getWidth() - 10, SCORE_TOP_SPACE + SCORE_LINE_SPACE, this.getWidth() - 10, SCORE_TOP_SPACE + SCORE_LINE_SPACE * 5);
+        g.drawLine(10, SCORE_TOP_SPACE + SCORE_LINE_SPACE * 2, 10, SCORE_TOP_SPACE + SCORE_LINE_SPACE * 12);
+        g.drawLine(this.getWidth() - 10, SCORE_TOP_SPACE + SCORE_LINE_SPACE * 2, this.getWidth() - 10, SCORE_TOP_SPACE + SCORE_LINE_SPACE * 12);
+
+
     }
 }
