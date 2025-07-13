@@ -39,8 +39,11 @@ public class CircleOfFifthsComponent extends JPanel {
 
     private Set<CircleOfFifthsKeyFile> getAllSelected() {
         Set<CircleOfFifthsKeyFile> all = new HashSet<>();
-        for (CircleOfFifthsKeyFile keyFile : selectedKeys) {
-            all.addAll(CircleOfFifthsGenerator.select(keyFile));
+        if (topSelectedKey != null) {
+            all.addAll(CircleOfFifthsGenerator.select(topSelectedKey));
+        }
+        if (secondSelectedKey != null) {
+            all.addAll(CircleOfFifthsGenerator.select(secondSelectedKey));
         }
         return all;
     }
@@ -54,7 +57,7 @@ public class CircleOfFifthsComponent extends JPanel {
     }
 
     private void selectKey(CircleOfFifthsKeyFile keyFile) {
-        if(topSelectedKey == null) {
+        if (topSelectedKey == null) {
             topSelectedKey = keyFile;
         } else {
             secondSelectedKey = keyFile;

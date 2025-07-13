@@ -22,10 +22,7 @@ public class ScorePanel extends JPanel {
 
     private static final int SCORE_LINE_COUNT = 13;
 
-    private final int SCORE_TOP_SPACE = 360;
-
-
-    private static Map<KeyFile, Integer> SYMBOLS_SCORE_POSITIONS = Map.of(
+    private static final Map<KeyFile, Integer> SYMBOLS_SCORE_POSITIONS = Map.of(
             KeyFile.C, 7,
             KeyFile.D, 8,
             KeyFile.E, 9,
@@ -34,34 +31,26 @@ public class ScorePanel extends JPanel {
             KeyFile.B, 7,
             KeyFile.A, 6);
 
-    private static String FLAT_SYMBOL = "♭";
-    private static String SHARP_SYMBOL = "♯";
+    private static final String FLAT_SYMBOL = "♭";
+    private static final String SHARP_SYMBOL = "♯";
 
-    private JLabel clefIcon = new JLabel();
-    private JLabel baseClefIcon = new JLabel();
+
+
 
     private ImageIcon fullNoteImage;
     private ImageIcon crossNoteImage;
+    int cleveSymbolCount = 0;
+    private Set<Note> sharpNotes = new HashSet<>();
+    private Set<Note> flatNotes = new HashSet<>();
+
+    private OctaveRange octaveRange;
+    private java.util.List<Octave> octaves;
 
 
     public ScorePanel() {
         setLayout(null);
-
-
         fullNoteImage = new ImageIcon(getResource("music_note.png"));
         crossNoteImage = new ImageIcon(getResource("music_note-dash.png"));
-        // clef icon setup
-        ImageIcon clefIconImage = new ImageIcon(getResource("clef_small.png"));
-        clefIcon.setIcon(clefIconImage);
-        clefIcon.setSize(new Dimension(50, 127));
-        clefIcon.setLocation(10, SCORE_TOP_SPACE);
-
-        // base clef icon setup
-        ImageIcon baseClefIconImage = new ImageIcon(getResource("base_clef.png"));
-        baseClefIcon.setIcon(baseClefIconImage);
-        baseClefIcon.setSize(new Dimension(51, 48));
-        baseClefIcon.setLocation(10, (SCORE_TOP_SPACE) + SCORE_LINE_SPACE * 8);
-
     }
 
 
@@ -69,10 +58,26 @@ public class ScorePanel extends JPanel {
         return getClass().getResource("/" + resourceName);
     }
 
+    private void showClefIcon() {
+        // clef icon setup
+        JLabel clefIcon = new JLabel();
+        ImageIcon clefIconImage = new ImageIcon(getResource("clef_small.png"));
+        clefIcon.setIcon(clefIconImage);
+        clefIcon.setSize(new Dimension(50, 127));
+        clefIcon.setLocation(10, getScoreTopPosition());
+        add(clefIcon);
+    }
 
-    int cleveSymbolCount = 0;
-    private Set<Note> sharpNotes = new HashSet<>();
-    private Set<Note> flatNotes = new HashSet<>();
+    private void showBaseClefIcon() {
+        // base clef icon setup
+        JLabel baseClefIcon = new JLabel();
+        ImageIcon baseClefIconImage = new ImageIcon(getResource("base_clef.png"));
+        baseClefIcon.setIcon(baseClefIconImage);
+        baseClefIcon.setSize(new Dimension(51, 48));
+        baseClefIcon.setLocation(10, (getScoreTopPosition()) + SCORE_LINE_SPACE * 8);
+        this.add(baseClefIcon);
+    }
+
 
     private void showCleveSymbol(double linePosition, String symbol, int size) {
         JLabel label = new JLabel(symbol);
@@ -119,6 +124,12 @@ public class ScorePanel extends JPanel {
     }
 
     public void setOctaves(OctaveRange octaveRange, java.util.List<Octave> octaves) {
+        this.octaveRange = octaveRange;
+        this.octaves = octaves;
+        repaint();
+    }
+
+    private void renderComponents(OctaveRange octaveRange, java.util.List<Octave> octaves) {
         resetView();
         int noteHeight = 80;
         int column = 0;
@@ -150,17 +161,19 @@ public class ScorePanel extends JPanel {
 
             }
         }
-        add(this.clefIcon);
-        add(this.baseClefIcon);
-
-        this.repaint();
+        showClefIcon();
+        showBaseClefIcon();
     }
 
-    private void showNoteText(int octave, int xpos,  Note note) {
-        JLabel x = new JLabel(note.getKey().toString() + octave);
-        x.setLocation(xpos, SCORE_TOP_SPACE + SCORE_LINE_SPACE * 12);
-        x.setSize(new Dimension(30, 30));
-        add(x);
+    private int getScoreTopPosition() {
+        return getHeight() / 2 - SCORE_LINE_SPACE * SCORE_LINE_COUNT / 2;
+    }
+
+    private void showNoteText(int octave, int xPosition, Note note) {
+        JLabel noteText = new JLabel(note.toString() + octave);
+        noteText.setLocation(xPosition + 6, getScoreTopPosition() + SCORE_LINE_SPACE * 15);
+        noteText.setSize(new Dimension(30, 30));
+        add(noteText);
     }
 
     private int getC4Position() {
@@ -169,12 +182,12 @@ public class ScorePanel extends JPanel {
 
     public int getNoteScorePosition(Note n, int scaleLine) {
         double linePosition = scaleLine * 0.5;
-        return ((int) (getC4Position() + SCORE_TOP_SPACE - (SCORE_LINE_SPACE * linePosition)));
+        return ((int) (getC4Position() + getScoreTopPosition() - (SCORE_LINE_SPACE * linePosition)));
     }
 
 
     private int getLineY(int lineIndex) {
-        return SCORE_TOP_SPACE + SCORE_LINE_SPACE * lineIndex;
+        return getScoreTopPosition() + SCORE_LINE_SPACE * lineIndex;
     }
 
     private boolean isLineVisible(int lineIndex) {
@@ -191,9 +204,9 @@ public class ScorePanel extends JPanel {
             }
         }
 
-        g.drawLine(10, SCORE_TOP_SPACE + SCORE_LINE_SPACE * 2, 10, SCORE_TOP_SPACE + SCORE_LINE_SPACE * 12);
-        g.drawLine(this.getWidth() - 10, SCORE_TOP_SPACE + SCORE_LINE_SPACE * 2, this.getWidth() - 10, SCORE_TOP_SPACE + SCORE_LINE_SPACE * 12);
-
+        g.drawLine(10, getScoreTopPosition() + SCORE_LINE_SPACE * 2, 10, getScoreTopPosition() + SCORE_LINE_SPACE * 12);
+        g.drawLine(this.getWidth() - 10, getScoreTopPosition() + SCORE_LINE_SPACE * 2, this.getWidth() - 10, getScoreTopPosition() + SCORE_LINE_SPACE * 12);
+        renderComponents(octaveRange, octaves);
 
     }
 }

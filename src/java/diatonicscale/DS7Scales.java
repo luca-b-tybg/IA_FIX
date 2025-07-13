@@ -13,9 +13,8 @@ import java.util.*;
  */
 public class DS7Scales {
     // Core components for scale generation
-    private Note key;                        // The tonic/root note of the scale (e.g., C, D, E, etc.)
-    private Mode mode;                     // The mode of the scale (Ionian/Major, Dorian, Phrygian, etc.)
     public static List<KeyFile> C_MAJOR_NOTES = Arrays.asList(KeyFile.C, KeyFile.D, KeyFile.E, KeyFile.F, KeyFile.G, KeyFile.A, KeyFile.B);  // Natural notes in C major
+    //TODO review the usage of these
     private KeyFile[] cOrganisedScale = new KeyFile[7];  // C major scale reorganized to start from the tonic
     private Note[] organisedScale = new Note[7];   // Final scale with appropriate sharps/flats applied
 
@@ -157,12 +156,11 @@ public class DS7Scales {
     //   private String[] scaleTones = new String[7];        // Semitone pattern for the selected mode
     private Integer[] organisedCTones = new Integer[7];   // Reorganized semitone pattern of C major
 
-    public DS7Scales(Note key, Mode mode) {
-        this.key = key;
-        this.mode = mode;
+    public DS7Scales(Note scaleNote) {
+
         // Find where our tonic is in the C major scale
         //   findNoteIndex tiTest = new findNoteIndex();
-        int tonicIndex = Math.max(C_MAJOR_NOTES.indexOf(key), 0);
+        int tonicIndex = Math.max(C_MAJOR_NOTES.indexOf(scaleNote.getKey()), 0);
 
         // Reorganize the scale and semitones starting from the tonic
         for (int i = 0; i < 7; i++) {
@@ -175,38 +173,21 @@ public class DS7Scales {
         }
     }
 
-    // Getters and setters
-
-
-    public Note[] getOrganisedScale() {
-        return organisedScale;
-    }
-
-    public KeyFile[] getcOrganisedScale() {
-        return cOrganisedScale;
-    }
 
     /**
      * Applies appropriate sharps and flats to the scale based on the selected key and mode
      */
-    public void findSharpsAndFlats(KeyFile key) {
+    public List<Note> findSharpsAndFlats(Note scaleNote, Mode mode) {
         // For Ionian/Major mode, use predefined major scales
         if (mode == Mode.IONIAN) {
-            applyMajorScale(key, mode);
-            return;
+            // applyMajorScale(key, mode);
+            return majorScales.get(scaleNote);
         }
 
         // For other modes, first get the relative major key's scale
         // Then rotate it to get the correct mode
-        List<Note> majorScale = getMajorScaleForKey(key, mode);
-        applyModeToMajorScale(majorScale);
-    }
-
-    /**
-     * Applies a predefined major scale based on the current key
-     */
-    private List<Note> applyMajorScale(KeyFile key, Mode mode) {
-        return majorScales.getOrDefault(Note.forKey(key), applyAlgorithmicScale(mode));
+        List<Note> majorScale = getMajorScaleForKey(scaleNote.getKey(), mode);
+        return applyModeToMajorScale(mode, majorScale);
     }
 
     /**
@@ -217,6 +198,8 @@ public class DS7Scales {
         // For example, if we're in D Dorian, the relative major is C
         int modeOffset = mode.ordinal();
         int cMajorIndex = Math.max(C_MAJOR_NOTES.indexOf(key), 0);
+
+        ///TODO: Fix these lookups
         KeyFile relativeMajorKey = C_MAJOR_NOTES.get((cMajorIndex - modeOffset + 7) % 7);
         return majorScales.getOrDefault(relativeMajorKey, majorScales.get(KeyFile.C));
     }
@@ -224,12 +207,13 @@ public class DS7Scales {
     /**
      * Applies mode rotation to a major scale to get the correct mode
      */
-    private void applyModeToMajorScale(List<Note> majorScale) {
+    private List<Note> applyModeToMajorScale(Mode mode, List<Note> majorScale) {
         int modeOffset = mode.ordinal();
         List<Note> result = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             result.add(majorScale.get((i++ + modeOffset) % 7));
         }
+        return result;
     }
 
     /**
@@ -273,8 +257,5 @@ public class DS7Scales {
         return new ArrayList<>();
     }
 
-    public List<Note> getScaleForKey(Note scaleNote) {
-        return majorScales.get(scaleNote);
-    }
 
 }
