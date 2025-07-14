@@ -26,7 +26,7 @@ public class Main {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Diatonic Scale Generator", new DiatonicScalePanel());
         tabbedPane.addTab("Circle of Fifths Generator", new CircleOfFifthsPanel(frame));
-        tabbedPane.addTab("Melody Generator", new MelodyGeneratorPanel());
+        tabbedPane.addTab("Melody Generator", new MelodyGeneratorPanel(frame));
         frame.add(tabbedPane);
         frame.setVisible(true);
 
