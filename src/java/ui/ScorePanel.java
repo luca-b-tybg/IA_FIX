@@ -1,10 +1,7 @@
 package ui;
 
 import diatonicscale.DS7Scales;
-import scale.KeyFile;
-import scale.Note;
-import scale.Octave;
-import scale.OctaveRange;
+import scale.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,12 +34,12 @@ public class ScorePanel extends JPanel {
 
 
     private ImageIcon fullNoteImage;
+    private ImageIcon semiNoteImage;
     private ImageIcon crossNoteImage;
     int cleveSymbolCount = 0;
     private Set<Note> sharpNotes = new HashSet<>();
     private Set<Note> flatNotes = new HashSet<>();
 
-    private OctaveRange octaveRange;
     private java.util.List<Octave> octaves = new ArrayList<>();
 
 
@@ -50,6 +47,7 @@ public class ScorePanel extends JPanel {
         setLayout(null);
         fullNoteImage = new ImageIcon(getResource("music_note.png"));
         crossNoteImage = new ImageIcon(getResource("music_note-dash.png"));
+        semiNoteImage = new ImageIcon(getResource("semibreve.png"));
     }
 
 
@@ -82,7 +80,7 @@ public class ScorePanel extends JPanel {
         JLabel label = new JLabel(symbol);
         label.setFont(new Font("Default", Font.BOLD, size));
         label.setSize(40, 40);
-        label.setLocation(60 + (cleveSymbolCount * 15), getNoteScorePosition(null, (int) linePosition) - 40);
+        label.setLocation(60 + (cleveSymbolCount * 15), getNoteScorePosition((int) linePosition) - 40);
         cleveSymbolCount++;
         this.add(label);
     }
@@ -110,51 +108,82 @@ public class ScorePanel extends JPanel {
         cleveSymbolCount = 0;
     }
 
-
-    private int getScoreNotePosition(int octaveIndex, Note note) {
+    protected int getScoreNotePosition(int octaveIndex, Note note) {
         int keyPosition = DS7Scales.C_MAJOR_NOTES.indexOf(note.getKey());
         return keyPosition + (7 * (octaveIndex - 4));
     }
 
 
-    public void setOctaves(OctaveRange octaveRange, java.util.List<Octave> octaves) {
-        this.octaveRange = octaveRange;
+    public void setOctaves(java.util.List<Octave> octaves) {
         this.octaves = octaves;
         repaint();
     }
 
-    private void renderComponents(OctaveRange octaveRange, java.util.List<Octave> octaves) {
-        resetView();
-        int noteHeight = 80;
-        int column = 0;
+    protected ImageIcon getNoteImage(Octave octave, Note note) {
+        if (note.getRhythmType() == RhythmType.SEMIBREVE) {
+            return semiNoteImage;
+        }
+        if (note.getKey() == KeyFile.C && (octave.getPosition() == 2 || octave.getPosition() == 4)) {
+            return crossNoteImage;
+        }
+        return fullNoteImage;
+    }
 
+    private void renderComponents(java.util.List<Octave> octaves) {
+
+        int columnPosition = 0;
         for (Octave octave : octaves) {
             for (Note note : octave.getNotes()) {
-                JLabel noteLabel = new JLabel();
-                if (note.getKey() == KeyFile.C && (octave.getPosition() == 2 || octave.getPosition() == 4)) {
-                    noteLabel.setIcon(crossNoteImage);
-                } else {
-                    noteLabel.setIcon(fullNoteImage);
-                }
-                if (note.isSharp) {
-                    showSharpSymbol(note);
-                }
-
-                if (note.isFlat()) {
-                    showFlatSymbol(note);
-                }
                 int notePosition = getScoreNotePosition(octave.getPosition(), note);
-                int noteXpos = 120 + (NOTE_GAP_SPACE * column);
-                noteLabel.setLocation(noteXpos, getNoteScorePosition(note, notePosition) - 50);
-                noteLabel.setSize(30, noteHeight);
-                showNoteText(octave.getPosition(), noteXpos, note);
 
-                this.add(noteLabel);
-                column++;
+                var noteComponent = getNote(notePosition, columnPosition, octave, note);
+                showNoteText(octave.getPosition(), noteComponent.getX(), note);
+                add(noteComponent);
+                noteAdded(note, octave, notePosition, columnPosition);
+                columnPosition++;
+
             }
         }
         showClefIcon();
         showBaseClefIcon();
+    }
+
+    protected void noteAdded(Note note, Octave octave, int linePosition, int columnPosition) {
+
+    }
+
+    protected JComponent getNote(int linePosition, int columnPosition, Octave octave, Note note) {
+        JComponent noteLabel = getNoteComponent(octave, note);
+        if (note.isSharp) {
+            showSharpSymbol(note);
+        }
+        if (note.isFlat()) {
+            showFlatSymbol(note);
+        }
+        int noteXPos = 120 + NOTE_GAP_SPACE * columnPosition;
+        noteLabel.setLocation(noteXPos, getNoteScorePosition(linePosition) - getImageCorrection(noteLabel));
+        return noteLabel;
+    }
+
+
+    private JComponent getNoteComponent(Octave octave, Note note) {
+        JLabel noteLabel = new JLabel();
+        ImageIcon imageIcon = getNoteImage(octave, note);
+        noteLabel.setIcon(imageIcon);
+        noteLabel.setSize(imageIcon.getIconWidth(), imageIcon.getIconHeight());
+        return noteLabel;
+    }
+
+    private int getImageCorrection(JComponent imageIcon) {
+        if (imageIcon.getHeight() > 40) {
+            return (imageIcon.getHeight() / 2 + SCORE_LINE_SPACE / 2);
+        } else {
+            return -SCORE_LINE_SPACE / 2;
+        }
+    }
+
+    protected boolean shouldDisplayInNextColumn(Note note) {
+        return true;
     }
 
     private int getScoreTopPosition() {
@@ -172,7 +201,7 @@ public class ScorePanel extends JPanel {
         return SCORE_LINE_SPACE * 6;
     }
 
-    public int getNoteScorePosition(Note n, int scaleLine) {
+    private int getNoteScorePosition(int scaleLine) {
         double linePosition = scaleLine * 0.5;
         return ((int) (getC4Position() + getScoreTopPosition() - (SCORE_LINE_SPACE * linePosition)));
     }
@@ -196,10 +225,13 @@ public class ScorePanel extends JPanel {
             }
         }
 
+
         g.drawLine(10, getScoreTopPosition() + SCORE_LINE_SPACE * 2, 10, getScoreTopPosition() + SCORE_LINE_SPACE * 12);
         g.drawLine(this.getWidth() - 10, getScoreTopPosition() + SCORE_LINE_SPACE * 2, this.getWidth() - 10, getScoreTopPosition() + SCORE_LINE_SPACE * 12);
         if (!octaves.isEmpty()) {
-            renderComponents(octaveRange, octaves);
+            resetView();
+            renderComponents(octaves);
+
         }
 
     }

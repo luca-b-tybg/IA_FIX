@@ -25,13 +25,12 @@ public class DiatonicScalePanel extends JPanel implements DiatonicScaleParameter
 
     @Override
     public void onDiatonicScaleParametersChanged(DiatonicScaleInputs diatonicScaleInputs) {
-        System.out.println("onDiatonicScaleParametersChanged" + diatonicScaleInputs);
         var ds7Scales = new DS7Scales(diatonicScaleInputs.getScale());
         var notes = ds7Scales.findSharpsAndFlats(diatonicScaleInputs.getScale(), diatonicScaleInputs.getMode());
         var octaves = OctaveGenerator.generateFullScaleWithOctaves(diatonicScaleInputs.getOctRange(), notes);
 
 
-        scorePanel.setOctaves(diatonicScaleInputs.getOctRange(), octaves);
+        scorePanel.setOctaves(octaves);
         for (Octave s : octaves) {
             System.out.println(s);
         }

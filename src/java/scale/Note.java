@@ -2,8 +2,6 @@ package scale;
 
 import java.util.Objects;
 
-enum RhythmType{SEMIBREVE, dottedminim, minim, dottedcrotchet, crotchet, quaver}
-
 public class Note {
     private KeyFile key;
     private boolean isFlat = false;
@@ -11,10 +9,11 @@ public class Note {
 
     public boolean isSharp;
 
-    public Note(KeyFile key, boolean isFlat, boolean isSharp) {
+    public Note(KeyFile key, boolean isFlat, boolean isSharp, RhythmType rhythmType) {
         this.key = key;
         this.isFlat = isFlat;
         this.isSharp = isSharp;
+        this.rhythmType = rhythmType;
     }
 
     public static Note sharp(KeyFile key) {
@@ -28,14 +27,14 @@ public class Note {
     }
 
     public static Note flat(KeyFile key) {
-        return new Note(key, true, false);
+        return new Note(key, true, false, RhythmType.crotchet);
     }
 
     public static Note fromString(String spec) {
        String  key =   String.valueOf (spec.charAt(0));
        boolean isSharp = spec.contains("#");
        boolean isFFlat = spec.contains("b");
-       return new Note(KeyFile.valueOf( key.toUpperCase()), isFFlat, isSharp);
+       return new Note(KeyFile.valueOf( key.toUpperCase()), isFFlat, isSharp, RhythmType.crotchet);
     }
 
     public static Note forKey(KeyFile key) {
@@ -73,6 +72,11 @@ public class Note {
         if (o == null || getClass() != o.getClass()) return false;
         Note note = (Note) o;
         return isFlat == note.isFlat && isSharp == note.isSharp && key == note.key;
+    }
+
+
+    public RhythmType getRhythmType() {
+        return rhythmType;
     }
 
     @Override

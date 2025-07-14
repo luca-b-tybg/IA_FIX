@@ -1,6 +1,8 @@
+import melodygenerator.MelodyGenerator;
 import ui.CircleOfFifthsComponent;
 import ui.CircleOfFifthsPanel;
 import ui.DiatonicScalePanel;
+import ui.MelodyGeneratorPanel;
 
 import javax.swing.*;
 import java.util.Scanner;
@@ -22,10 +24,11 @@ public class Main {
         frame.setSize(1280, 768);
 
         JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("Circle of Fifths Generator", new CircleOfFifthsPanel(frame));
         tabbedPane.addTab("Diatonic Scale Generator", new DiatonicScalePanel());
+        tabbedPane.addTab("Circle of Fifths Generator", new CircleOfFifthsPanel(frame));
+        tabbedPane.addTab("Melody Generator", new MelodyGeneratorPanel());
         frame.add(tabbedPane);
         frame.setVisible(true);
-        //some change 2
+
     }
 }
