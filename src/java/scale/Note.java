@@ -61,6 +61,10 @@ public class Note {
         isFlat = isSharp;
     }
 
+    public void setRhythmType(RhythmType rhythmType) {
+        this.rhythmType = rhythmType;
+    }
+
     @Override
     public String toString() {
         return key.name() + (isFlat ? "b" : "") + (isSharp ? "#" : "");
