@@ -2,13 +2,16 @@ package scale;
 
 import java.util.Objects;
 
+enum RhythmType{SEMIBREVE, dottedminim, minim, dottedcrotchet, crotchet, quaver}
+
 public class Note {
     private KeyFile key;
     private boolean isFlat = false;
+    RhythmType rhythmType = RhythmType.crotchet;
 
     public boolean isSharp;
 
-    private Note(KeyFile key, boolean isFlat, boolean isSharp) {
+    public Note(KeyFile key, boolean isFlat, boolean isSharp) {
         this.key = key;
         this.isFlat = isFlat;
         this.isSharp = isSharp;

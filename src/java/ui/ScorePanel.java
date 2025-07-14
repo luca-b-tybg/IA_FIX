@@ -9,6 +9,7 @@ import scale.OctaveRange;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -35,8 +36,6 @@ public class ScorePanel extends JPanel {
     private static final String SHARP_SYMBOL = "♯";
 
 
-
-
     private ImageIcon fullNoteImage;
     private ImageIcon crossNoteImage;
     int cleveSymbolCount = 0;
@@ -44,7 +43,7 @@ public class ScorePanel extends JPanel {
     private Set<Note> flatNotes = new HashSet<>();
 
     private OctaveRange octaveRange;
-    private java.util.List<Octave> octaves;
+    private java.util.List<Octave> octaves = new ArrayList<>();
 
 
     public ScorePanel() {
@@ -111,17 +110,12 @@ public class ScorePanel extends JPanel {
         cleveSymbolCount = 0;
     }
 
-    private int getStartScorePosition(OctaveRange octaveRange, Octave octave) {
-        int octaveCount = Math.abs(4 - octaveRange.octaveStart);
-        int direction = Integer.compare(octaveRange.octaveStart, 4);
 
-        Note startNote = octave.getNotes().getFirst();
-        int keyPosition = DS7Scales.C_MAJOR_NOTES.indexOf(startNote.getKey());
-
-
-        return keyPosition + (direction * ((7 * octaveCount)));
-
+    private int getScoreNotePosition(int octaveIndex, Note note) {
+        int keyPosition = DS7Scales.C_MAJOR_NOTES.indexOf(note.getKey());
+        return keyPosition + (7 * (octaveIndex - 4));
     }
+
 
     public void setOctaves(OctaveRange octaveRange, java.util.List<Octave> octaves) {
         this.octaveRange = octaveRange;
@@ -133,7 +127,6 @@ public class ScorePanel extends JPanel {
         resetView();
         int noteHeight = 80;
         int column = 0;
-        int notePosition = getStartScorePosition(octaveRange, octaves.getFirst());
 
         for (Octave octave : octaves) {
             for (Note note : octave.getNotes()) {
@@ -150,6 +143,7 @@ public class ScorePanel extends JPanel {
                 if (note.isFlat()) {
                     showFlatSymbol(note);
                 }
+                int notePosition = getScoreNotePosition(octave.getPosition(), note);
                 int noteXpos = 120 + (NOTE_GAP_SPACE * column);
                 noteLabel.setLocation(noteXpos, getNoteScorePosition(note, notePosition) - 50);
                 noteLabel.setSize(30, noteHeight);
@@ -157,8 +151,6 @@ public class ScorePanel extends JPanel {
 
                 this.add(noteLabel);
                 column++;
-                notePosition++;
-
             }
         }
         showClefIcon();
@@ -206,7 +198,9 @@ public class ScorePanel extends JPanel {
 
         g.drawLine(10, getScoreTopPosition() + SCORE_LINE_SPACE * 2, 10, getScoreTopPosition() + SCORE_LINE_SPACE * 12);
         g.drawLine(this.getWidth() - 10, getScoreTopPosition() + SCORE_LINE_SPACE * 2, this.getWidth() - 10, getScoreTopPosition() + SCORE_LINE_SPACE * 12);
-        renderComponents(octaveRange, octaves);
+        if (!octaves.isEmpty()) {
+            renderComponents(octaveRange, octaves);
+        }
 
     }
 }

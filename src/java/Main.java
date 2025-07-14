@@ -22,7 +22,7 @@ public class Main {
         frame.setSize(1280, 768);
 
         JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("Circle of Fifths Generator", new CircleOfFifthsPanel());
+        tabbedPane.addTab("Circle of Fifths Generator", new CircleOfFifthsPanel(frame));
         tabbedPane.addTab("Diatonic Scale Generator", new DiatonicScalePanel());
         frame.add(tabbedPane);
         frame.setVisible(true);

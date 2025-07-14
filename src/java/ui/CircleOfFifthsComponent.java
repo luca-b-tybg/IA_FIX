@@ -17,7 +17,7 @@ public class CircleOfFifthsComponent extends JPanel {
     public List<CircleOfFifthsKeyFile> selectedKeys = new ArrayList<>();
     public CircleOfFifthsKeyFile topSelectedKey = null;
     public CircleOfFifthsKeyFile secondSelectedKey = null;
-
+    private List<ProgressionChangeListener> progressionChangeListeners = new ArrayList<>();
 
     public CircleOfFifthsComponent() {
         this.setLayout(null);
@@ -63,6 +63,9 @@ public class CircleOfFifthsComponent extends JPanel {
             secondSelectedKey = keyFile;
         }
         selectedKeys.add(keyFile);
+        for (ProgressionChangeListener listener : progressionChangeListeners) {
+            listener.onNewProgression(selectedKeys);
+        }
         repaint();
     }
 
@@ -98,6 +101,10 @@ public class CircleOfFifthsComponent extends JPanel {
             }
             this.add(keyLabel);
         }
+    }
+
+    public void addProgressionChangeListener(ProgressionChangeListener listener) {
+        progressionChangeListeners.add(listener);
     }
 
     private void renderCircle(Graphics g, int circleLevel) {
