@@ -1,6 +1,5 @@
 package diatonicscale;
 
-import scale.KeyFile;
 import scale.Mode;
 import scale.Note;
 import scale.OctaveRange;

@@ -1,6 +1,7 @@
 package circle;
 
 import scale.KeyFile;
+import utils.StringUtils;
 
 import java.util.Objects;
 
@@ -12,12 +13,21 @@ public class CircleOfFifthsKeyFile {
     private boolean isDiminished = false;
 
 
-
     private CircleOfFifthsKeyFile(KeyFile keyFile, CircleOfFifthsMinorMajor majorOrMinor, boolean isSharp, boolean isDiminished) {
         this.keyFile = keyFile;
         this.majorOrMinor = majorOrMinor;
         this.isSharp = isSharp;
         this.isDiminished = isDiminished;
+    }
+
+    public static CircleOfFifthsKeyFile fromString(String spec) {
+        String key = String.valueOf(spec.charAt(0));
+        CircleOfFifthsMinorMajor majorOrMinor = StringUtils.isUpperCase(spec.charAt(0)) ? CircleOfFifthsMinorMajor.MAJOR : CircleOfFifthsMinorMajor.MINOR;
+        boolean isSharp = spec.contains("#");
+        boolean isDim = spec.contains("dim");
+
+
+        return new CircleOfFifthsKeyFile(KeyFile.valueOf(key.toUpperCase()), majorOrMinor, isSharp, isDim);
     }
 
     public static CircleOfFifthsKeyFile sharp(KeyFile key) {

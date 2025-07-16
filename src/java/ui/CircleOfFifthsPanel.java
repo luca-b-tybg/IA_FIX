@@ -1,9 +1,6 @@
 package ui;
 
 import circle.CircleOfFifthsKeyFile;
-import scale.Note;
-import scale.Octave;
-import scale.RhythmType;
 import utils.FileUtils;
 
 import javax.swing.*;
@@ -23,19 +20,17 @@ public class CircleOfFifthsPanel extends JPanel {
         public ControlPanel(CircleOfFifthsComponent circleOfFifthsComponent) {
             JPanel circleControlPanel = new JPanel();
             JButton resetBtn = new JButton("Reset");
-
-
             showProgressionBtn.setEnabled(false);
             saveProgressionBtn.setEnabled(false);
             showProgressionBtn.addActionListener(e -> {
                 JDialog dialog = new JDialog(parentWindow);
                 dialog.setSize(new Dimension(800, 600));
                 Container dialogContainer = dialog.getContentPane();
-                ScorePanel scorePanel = new ProgressionScorePanel();
+                ProgressionScorePanel scorePanel = new ProgressionScorePanel();
                 scorePanel.setLocation(new Point(10, 10));
                 scorePanel.setSize(new Dimension(800, 600));
                 scorePanel.setVisible(true);
-                scorePanel.setOctaves(getProgressionOctave());
+                scorePanel.setProgressions(progressions);
                 dialogContainer.add(scorePanel);
                 dialog.setVisible(true);
             });
@@ -67,14 +62,6 @@ public class CircleOfFifthsPanel extends JPanel {
             add(circleControlPanel);
         }
 
-        private java.util.List<Octave> getProgressionOctave() {
-            Octave defaultOctave = new Octave(2);
-            for (CircleOfFifthsKeyFile keyFile : progressions) {
-                defaultOctave.add(new Note(keyFile.getKeyFile(), false, keyFile.isSharp(), RhythmType.SEMIBREVE));
-            }
-            System.out.println(defaultOctave);
-            return List.of(defaultOctave);
-        }
 
         @Override
         public void onNewProgression(List<CircleOfFifthsKeyFile> progressionKeys) {

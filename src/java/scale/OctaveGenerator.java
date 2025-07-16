@@ -15,29 +15,30 @@ public class OctaveGenerator {
      * In Western music theory, the octave changes after B, so this method
      * tracks when B is reached to increment the octave number
      */
-    public static List<Octave> generateFullScaleWithOctaves(OctaveRange octRange, List<Note> notes) {
-        List<Octave> allOctaves = new ArrayList<Octave>();
+    public static List<Note> generateFullScaleWithOctaves(OctaveRange octRange, List<Note> notes) {
+        List<Note> allOctaveNotes = new ArrayList<>();
         int currentOctave = octRange.octaveStart; // Start at the first octave in the range
-        Octave octave = new Octave(currentOctave);
+
         // Loop through each octave in the range
         for (int o = octRange.octaveStart; o < octRange.octaveEnd; o++) {
             // Loop through each of the 7 notes in the scale
             for (Note note : notes) {
                 // Add the current note with its octave number to the final scale
-                octave.add(note);
+                Note noteOnOctave = new Note(note);
+                noteOnOctave.setOctave(currentOctave);
+                allOctaveNotes.add(noteOnOctave);
                 // If we've reached B, increment the octave
                 // This follows standard music notation where C starts a new octave
                 if (note.getKey() == KeyFile.B) {
                     currentOctave++;
-                    allOctaves.add(octave);
-                    octave = new Octave(currentOctave);
                 }
             }
 
         }
-        octave.add(notes.getFirst());
-        allOctaves.add(octave);
+        Note lastNote = new Note(notes.getFirst());
+        lastNote.setOctave(currentOctave);
+        allOctaveNotes.add(lastNote);
 
-        return allOctaves;
+        return allOctaveNotes;
     }
 }

@@ -15,6 +15,18 @@ import java.util.Set;
 
 public class ScorePanel extends JPanel {
 
+    static class PositionedNote {
+        Note note;
+        int column;
+        int line;
+
+        public PositionedNote(Note note, int column, int line) {
+            this.note = note;
+            this.column = column;
+            this.line = line;
+        }
+    }
+
     private static final int SCORE_LINE_SPACE = 20;
 
     private static final int NOTE_GAP_SPACE = 45;
@@ -41,7 +53,7 @@ public class ScorePanel extends JPanel {
     private Set<Note> sharpNotes = new HashSet<>();
     private Set<Note> flatNotes = new HashSet<>();
 
-    private java.util.List<Octave> octaves = new ArrayList<>();
+    private java.util.List<PositionedNote> notes = new ArrayList<>();
 
 
     public ScorePanel() {
@@ -49,6 +61,15 @@ public class ScorePanel extends JPanel {
         fullNoteImage = new ImageIcon(getResource("music_note.png"));
         crossNoteImage = new ImageIcon(getResource("music_note-dash.png"));
         semiNoteImage = new ImageIcon(getResource("semibreve.png"));
+    }
+
+    private ImageIcon getImageForNote (Note note) {
+        switch (note.getRhythmType()) {
+            case SEMIBREVE -> {
+                return fullNoteImage;
+            }
+        }
+        return null;
     }
 
 
@@ -107,69 +128,64 @@ public class ScorePanel extends JPanel {
         sharpNotes.clear();
         flatNotes.clear();
         cleveSymbolCount = 0;
+        labeledColumns.clear();
     }
 
-    protected int getScoreNotePosition(int octaveIndex, Note note) {
+    protected int getScoreNotePosition(Note note) {
         int keyPosition = DS7Scales.C_MAJOR_NOTES.indexOf(note.getKey());
-        return keyPosition + (7 * (octaveIndex - 4));
+        return keyPosition + (7 * (note.getOctave() - 4));
     }
 
-
-    public void setOctaves(java.util.List<Octave> octaves) {
-        this.octaves = octaves;
-        repaint();
-    }
 
     public void showScoreBar(int columnPosition, int startLineIndex, int endLineIndex) {
-       int barXPos =  getColumnPosition(columnPosition) -10;
-       int barYPos =  getNoteScorePosition(endLineIndex);
-       int barHeight = Math.abs(Math.abs(endLineIndex) -Math.abs( startLineIndex)) * SCORE_LINE_SPACE/2;
+        int barXPos = getColumnPosition(columnPosition) - 10;
+        int barYPos = getNoteScorePosition(endLineIndex);
+        int barHeight = Math.abs(Math.abs(endLineIndex) - Math.abs(startLineIndex)) * SCORE_LINE_SPACE / 2;
         ScoreBarComponent scoreBarComponent = new ScoreBarComponent(4, barHeight);
         scoreBarComponent.setLocation(barXPos, barYPos);
         add(scoreBarComponent);
     }
 
-    protected ImageIcon getNoteImage(Octave octave, Note note) {
+    protected ImageIcon getNoteImage(Note note) {
         if (note.getRhythmType() == RhythmType.SEMIBREVE) {
             return semiNoteImage;
         }
-        if (note.getKey() == KeyFile.C && (octave.getPosition() == 2 || octave.getPosition() == 4)) {
+        if (note.getKey() == KeyFile.C && (note.getOctave() == 2 || note.getOctave() == 4)) {
             return crossNoteImage;
         }
         return fullNoteImage;
     }
 
-    private void renderComponents(java.util.List<Octave> octaves) {
-        int columnPosition = 0;
-        for (Octave octave : octaves) {
-            for (Note note : octave.getNotes()) {
-                int notePosition = getScoreNotePosition(octave.getPosition(), note);
+    private Set<Integer> labeledColumns = new HashSet<>();
 
-                var noteComponent = getNote(notePosition, columnPosition, octave, note);
-                showNoteText(octave.getPosition(), noteComponent.getX(), note);
-                add(noteComponent);
-                noteAdded(note, octave, notePosition, columnPosition);
-                columnPosition++;
-
+    private void renderComponents(java.util.List<PositionedNote> notes) {
+        for (PositionedNote localNote : notes) {
+            var noteComponent = getNote(localNote.line, localNote.column, localNote.note);
+            if (!labeledColumns.contains(localNote.column)) {
+                showNoteText(noteComponent.getX(), localNote.note);
+                labeledColumns.add(localNote.column);
             }
+            add(noteComponent);
         }
 
     }
 
     public void addNote(int linePosition, int columnPosition, Note note) {
+        notes.add(new PositionedNote(note, columnPosition, linePosition));
+        //repaint();
+    }
+
+    public void reset() {
+        notes.clear();
+        repaint();
+    }
+
+    protected void noteAdded(Note note, int linePosition, int columnPosition) {
 
     }
 
-    public void addNote(int linePosition, Note note) {
-
-    }
-
-    protected void noteAdded(Note note, Octave octave, int linePosition, int columnPosition) {
-
-    }
-
-    protected JComponent getNote(int linePosition, int columnPosition, Octave octave, Note note) {
-        JComponent noteLabel = getNoteComponent(octave, note);
+    protected JComponent getNote(int linePosition, int columnPosition, Note note) {
+        JComponent noteLabel = getNoteComponent(note);
         if (note.isSharp) {
             showSharpSymbol(note);
         }
@@ -181,10 +197,10 @@ public class ScorePanel extends JPanel {
         return noteLabel;
     }
 
-//TODO: merge this into getNote
-    private JComponent getNoteComponent(Octave octave, Note note) {
+    //TODO: merge this into getNote
+    private JComponent getNoteComponent(Note note) {
         JLabel noteLabel = new JLabel();
-        ImageIcon imageIcon = getNoteImage(octave, note);
+        ImageIcon imageIcon = getNoteImage(note);
         noteLabel.setIcon(imageIcon);
         noteLabel.setSize(imageIcon.getIconWidth(), imageIcon.getIconHeight());
         return noteLabel;
@@ -194,7 +210,7 @@ public class ScorePanel extends JPanel {
         if (imageIcon.getHeight() > 40) {
             return (imageIcon.getHeight() / 2 + SCORE_LINE_SPACE / 2);
         } else {
-            return - SCORE_LINE_SPACE / 2;
+            return -SCORE_LINE_SPACE / 2;
         }
     }
 
@@ -203,8 +219,8 @@ public class ScorePanel extends JPanel {
         return getHeight() / 2 - SCORE_LINE_SPACE * SCORE_LINE_COUNT / 2;
     }
 
-    private void showNoteText(int octave, int xPosition, Note note) {
-        JLabel noteText = new JLabel(note.toString() + octave);
+    private void showNoteText(int xPosition, Note note) {
+        JLabel noteText = new JLabel(note.toString() + note.getOctave());
         noteText.setLocation(xPosition + 6, getScoreTopPosition() + SCORE_LINE_SPACE * 15);
         noteText.setSize(new Dimension(30, 30));
         add(noteText);
@@ -217,6 +233,7 @@ public class ScorePanel extends JPanel {
     private int getColumnPosition(int columnIndex) {
         return 120 + NOTE_GAP_SPACE * columnIndex;
     }
+
     private int getNoteScorePosition(int scaleLine) {
         double linePosition = scaleLine * 0.5;
         return ((int) (getC4Position() + getScoreTopPosition() - (SCORE_LINE_SPACE * linePosition)));
@@ -244,9 +261,9 @@ public class ScorePanel extends JPanel {
 
         g.drawLine(10, getScoreTopPosition() + SCORE_LINE_SPACE * 2, 10, getScoreTopPosition() + SCORE_LINE_SPACE * 12);
         g.drawLine(this.getWidth() - 10, getScoreTopPosition() + SCORE_LINE_SPACE * 2, this.getWidth() - 10, getScoreTopPosition() + SCORE_LINE_SPACE * 12);
-        if (!octaves.isEmpty()) {
+        if (!notes.isEmpty()) {
             resetView();
-            renderComponents(octaves);
+            renderComponents(notes);
             showClefIcon();
             showBaseClefIcon();
 

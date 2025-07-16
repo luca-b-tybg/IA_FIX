@@ -1,16 +1,15 @@
 package ui;
 
+import circle.CircleOfFifthsKeyFile;
 import melodygenerator.MelodyGenerator;
-import scale.KeyFile;
 import scale.Note;
-import scale.Octave;
-import scale.RhythmType;
 import utils.FileUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MelodyGeneratorPanel extends JPanel {
@@ -18,17 +17,9 @@ public class MelodyGeneratorPanel extends JPanel {
 
     private MelodyGenerator melodyGenerator = new MelodyGenerator();
 
-    ProgressionScorePanel scorePanel = new ProgressionScorePanel() {
-        @Override
-        protected void onNewProgression(Note note, Octave octave, int linePosition, int columnPosition) {
-
-        }
-    };
+    ProgressionScorePanel scorePanel = new ProgressionScorePanel();
 
     class ProgressionListPanel extends JPanel {
-        //TODO: add the progression list component
-        //TODO: add control bar with open
-
 
         public ProgressionListPanel() {
             setLayout(new BorderLayout());
@@ -44,14 +35,12 @@ public class MelodyGeneratorPanel extends JPanel {
                     try {
                         String content = FileUtils.loadFile(file);
                         String[] progressions = content.split(",");
-                        Octave octave = new Octave(2);
+                        List<CircleOfFifthsKeyFile> progressionKeys = new ArrayList<>();
                         for (String progression : progressions) {
-                            Note n = Note.fromString(progression);
-                            n.setRhythmType(RhythmType.SEMIBREVE);
-                            octave.add(n);
+                            CircleOfFifthsKeyFile key = CircleOfFifthsKeyFile.fromString(progression);
+                            progressionKeys.add(key);
                         }
-
-                        scorePanel.setOctaves(List.of(octave));
+                        setProgressions(progressionKeys);
 
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -62,6 +51,20 @@ public class MelodyGeneratorPanel extends JPanel {
             controlPanel.add(addProgressionBtn);
             controlPanel.add(new JButton("Remove"));
         }
+    }
+
+    private void setProgressions(List<CircleOfFifthsKeyFile> progressionKeys) {
+        scorePanel.reset();
+        scorePanel.setProgressions(progressionKeys);
+
+        List<Note> notes = melodyGenerator.generateMelodyProgression(progressionKeys);
+        System.out.println(notes);
+        int noteIndex = 0;
+        for (Note note : notes) {
+            scorePanel.addNote(1, noteIndex++, note);
+        }
+
+        scorePanel.repaint();
     }
 
     public MelodyGeneratorPanel(JFrame parentWindow) {

@@ -3,53 +3,46 @@ package melodygenerator;
 import circle.CircleOfFifthsKeyFile;
 import scale.KeyFile;
 import scale.Note;
-import scale.Octave;
+import scale.RhythmType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.random.RandomGenerator;
 
 public class MelodyGenerator {
+    private static final RhythmType[] NOTE_LENGTHS = RhythmType.values();
 
-    public static void main(String[] args) {
-        {
-            String[] egChordProg = {"A", "D", "c#", "G#dim", "f#", "A", "g", "F", "A"};
-            int numberOfBars = egChordProg.length;
-            double[] noteLengths = {4, 3, 2, 1.5, 1, 0.5};
-            for (int i = 0; i <= numberOfBars; i++) {
-                System.out.println(BarRhythm(noteLengths));
+
+    public List<Note> generateMelodyProgression(List<CircleOfFifthsKeyFile> progressionKeys) {
+        List<Note> notes = new ArrayList<>();
+        for (CircleOfFifthsKeyFile keyFile : progressionKeys) {
+            //todo: check if the key file has anything to do with the generation
+            for (RhythmType rhythm : getBarRhythm()) {
+                Note note = Note.forKey(KeyFile.C);
+                note.setOctave(2);
+                note.setRhythmType(rhythm);
+                notes.add(note);
             }
         }
-    }
-    public List<Octave> generate(List<CircleOfFifthsKeyFile> keys) {
-        Octave fourthOctave = new Octave(4);
-        fourthOctave.add(Note.forKey(KeyFile.C));
-        return List.of(fourthOctave);
+
+        return notes;
     }
 
 
-        public static ArrayList<Double> BarRhythm(double[] noteLengths){
-            double beatCount = 4;
-            Random rand = new Random();
-            ArrayList<Double> barNoteLengths = new ArrayList<Double>();
-
-            while(beatCount > 0){
-                int randomLength = rand.nextInt(6);
-                if (beatCount >= noteLengths[randomLength]){
-                    barNoteLengths.add(noteLengths[randomLength]);
-                    beatCount -= noteLengths[randomLength];
-                  //  System.out.println(Double.toString(noteLengths[randomLength]));
-                }
-
-                //else if(beatCount < noteLengths[randomLength]){
-                 //   randomLength = rand.nextInt(6);
-                //}
+    public static List<RhythmType> getBarRhythm() {
+        double beatCount = 4;
+        ArrayList<RhythmType> barNoteLengths = new ArrayList<>();
+        while (beatCount > 0) {
+            int randomLength = RandomGenerator.getDefault().nextInt(6);
+            RhythmType selectedRhythm = NOTE_LENGTHS[randomLength];
+            if (beatCount >= selectedRhythm.getBitCount()) {
+                barNoteLengths.add(selectedRhythm);
+                beatCount -= selectedRhythm.getBitCount();
             }
-            return barNoteLengths;
-        }
 
-        //then randomly select a note for each double value in the list.
-        //then randomly select an octave between octaves 4 and 5 for each note
+        }
+        return barNoteLengths;
+    }
 
 
 }

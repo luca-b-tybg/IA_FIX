@@ -153,6 +153,11 @@ public class DS7Scales {
         return entries;
     }
 
+    public static int getNotePositionRelativeToMiddleC(Note note) {
+        int keyPosition = DS7Scales.C_MAJOR_NOTES.indexOf(note.getKey());
+        return keyPosition + (7 * (note.getOctave() - 4));
+    }
+
     //   private String[] scaleTones = new String[7];        // Semitone pattern for the selected mode
     private Integer[] organisedCTones = new Integer[7];   // Reorganized semitone pattern of C major
 
