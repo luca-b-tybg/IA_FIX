@@ -14,22 +14,32 @@ class ProgressionScorePanel extends ScorePanel {
 
     @Override
     protected int getScoreNotePosition(int octaveIndex, Note note) {
-        if (octaveIndex == 2 && note.getKey() == KeyFile.F) {
-            return -11;
-        }
-        if (positions.containsKey(note.getKey())) {
-            return positions.get(note.getKey());
+        if (octaveIndex == 2 ) {
+            if(note.getKey() == KeyFile.F) {
+                return -11;
+            }
+            if (positions.containsKey(note.getKey())) {
+                return positions.get(note.getKey());
+            }
+
         }
 
         return super.getScoreNotePosition(octaveIndex, note);
     }
 
+
+
     @Override
     protected void noteAdded(Note note, Octave octave, int linePosition, int columnPosition) {
-
+        super.showScoreBar(columnPosition, -12 , -4);
         for (int i = 1; i <= 2; i++) {
             JComponent note1 = getNote(linePosition + 2 * i, columnPosition, octave, new Note(KeyFile.C, false, false, RhythmType.SEMIBREVE));
             add(note1);
         }
+        onNewProgression(note, octave, linePosition, columnPosition);
+    }
+
+    protected void onNewProgression(Note note, Octave octave, int linePosition, int columnPosition) {
+
     }
 }

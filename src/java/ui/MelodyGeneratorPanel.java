@@ -1,5 +1,6 @@
 package ui;
 
+import melodygenerator.MelodyGenerator;
 import scale.KeyFile;
 import scale.Note;
 import scale.Octave;
@@ -15,7 +16,14 @@ import java.util.List;
 public class MelodyGeneratorPanel extends JPanel {
     private JFrame parentWindow;
 
-    ProgressionScorePanel scorePanel = new ProgressionScorePanel();
+    private MelodyGenerator melodyGenerator = new MelodyGenerator();
+
+    ProgressionScorePanel scorePanel = new ProgressionScorePanel() {
+        @Override
+        protected void onNewProgression(Note note, Octave octave, int linePosition, int columnPosition) {
+
+        }
+    };
 
     class ProgressionListPanel extends JPanel {
         //TODO: add the progression list component

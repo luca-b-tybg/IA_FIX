@@ -1,3 +1,8 @@
 package scale;
 
-public enum RhythmType {SEMIBREVE, dottedminim, minim, dottedcrotchet, crotchet, quaver}
+public enum RhythmType {SEMIBREVE,
+    dottedminim,
+    MINIM,
+    dottedcrotchet,
+    crotchet,
+    quaver}

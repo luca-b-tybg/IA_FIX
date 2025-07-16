@@ -2,6 +2,7 @@ package ui;
 
 import diatonicscale.DS7Scales;
 import diatonicscale.DiatonicScaleInputs;
+import scale.Note;
 import scale.OctaveGenerator;
 import scale.Octave;
 
@@ -10,7 +11,38 @@ import java.awt.*;
 
 public class DiatonicScalePanel extends JPanel implements DiatonicScaleParameterListener {
     private final DiatonicScaleInputsPanel inputParamsPanel = new DiatonicScaleInputsPanel();
-    private final ScorePanel scorePanel = new ScorePanel();
+    private final ScorePanel scorePanel = new ScorePanel() {
+        private int count = 0;
+        @Override
+        protected void noteAdded(Note note, Octave octave, int linePosition, int columnPosition) {
+            if(columnPosition == 0 || count == 4 ) {
+//if(octave.getPosition() == 4 || octave.getPosition() == 5) {
+                    showInTopBar(columnPosition);
+      //          }
+  //              if(octave.getPosition() == 2 || octave.getPosition() == 3) {
+                  showInBottomBar(columnPosition);
+    //            }
+                count = 0;
+            }
+           /* if(columnPosition > octave.getNotes().size()) {
+                if(octave.getPosition() == 4 || octave.getPosition() == 5) {
+                    showInTopBar(columnPosition +1);
+                }
+                if(octave.getPosition() == 2 || octave.getPosition() == 3) {
+
+                    showInBottomBar(columnPosition +1);
+                }
+            }*/
+            count++;
+        }
+        private void showInTopBar(int columnPosition) {
+            super.showScoreBar(columnPosition, 0, 8);
+        }
+
+        private void showInBottomBar(int columnPosition) {
+            super.showScoreBar(columnPosition, -12, -4);
+        }
+    };
 
 
     public DiatonicScalePanel() {
