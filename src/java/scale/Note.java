@@ -7,6 +7,7 @@ public class Note {
     private boolean isFlat = false;
     RhythmType rhythmType = RhythmType.crotchet;
 
+
     public boolean isSharp;
 
     public Note(KeyFile key, boolean isFlat, boolean isSharp, RhythmType rhythmType) {

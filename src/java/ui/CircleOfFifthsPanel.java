@@ -58,7 +58,6 @@ public class CircleOfFifthsPanel extends JPanel {
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
-                    // save to file
                 }
             });
 
