@@ -1,7 +1,8 @@
 package ui;
 
-import diatonicscale.DS7Scales;
-import scale.*;
+import scale.KeyFile;
+import scale.Note;
+import ui.components.NoteComponent;
 import ui.components.ScoreBarComponent;
 
 import javax.swing.*;
@@ -27,9 +28,21 @@ public class ScorePanel extends JPanel {
         }
     }
 
+    static class ScoreBar {
+        int column = 0;
+        int startLine = 0;
+        int endLine = 0;
+
+        public ScoreBar(int column, int startLine, int endLine) {
+            this.column = column;
+            this.startLine = startLine;
+            this.endLine = endLine;
+        }
+    }
+
     private static final int SCORE_LINE_SPACE = 20;
 
-    private static final int NOTE_GAP_SPACE = 45;
+    private static final int NOTE_GAP_SPACE = 55;
 
     private static final int SCORE_LINE_COUNT = 13;
 
@@ -46,33 +59,19 @@ public class ScorePanel extends JPanel {
     private static final String SHARP_SYMBOL = "♯";
 
 
-    private ImageIcon fullNoteImage;
-    private ImageIcon semiNoteImage;
-    private ImageIcon crossNoteImage;
     int cleveSymbolCount = 0;
     private Set<Note> sharpNotes = new HashSet<>();
     private Set<Note> flatNotes = new HashSet<>();
 
     private java.util.List<PositionedNote> notes = new ArrayList<>();
-
+    private java.util.List<ScoreBar> scoreBars = new ArrayList<>();
 
     public ScorePanel() {
         setLayout(null);
-        fullNoteImage = new ImageIcon(getResource("music_note.png"));
-        crossNoteImage = new ImageIcon(getResource("music_note-dash.png"));
-        semiNoteImage = new ImageIcon(getResource("semibreve.png"));
-    }
-
-    private ImageIcon getImageForNote (Note note) {
-        switch (note.getRhythmType()) {
-            case SEMIBREVE -> {
-                return fullNoteImage;
-            }
-        }
-        return null;
     }
 
 
+    //TODO: remove this
     private URL getResource(String resourceName) {
         return getClass().getResource("/" + resourceName);
     }
@@ -131,61 +130,50 @@ public class ScorePanel extends JPanel {
         labeledColumns.clear();
     }
 
-    protected int getScoreNotePosition(Note note) {
-        int keyPosition = DS7Scales.C_MAJOR_NOTES.indexOf(note.getKey());
-        return keyPosition + (7 * (note.getOctave() - 4));
+    public void addScoreBar(int columnPosition, int startLineIndex, int endLineIndex) {
+        scoreBars.add(new ScoreBar(columnPosition, startLineIndex, endLineIndex));
     }
 
-
-    public void showScoreBar(int columnPosition, int startLineIndex, int endLineIndex) {
-        int barXPos = getColumnPosition(columnPosition) - 10;
-        int barYPos = getNoteScorePosition(endLineIndex);
-        int barHeight = Math.abs(Math.abs(endLineIndex) - Math.abs(startLineIndex)) * SCORE_LINE_SPACE / 2;
+    private ScoreBarComponent getScorebarComponent(ScoreBar scoreBar) {
+        int barXPos = getColumnPosition(scoreBar.column) - 10;
+        int barYPos = getNoteScorePosition(scoreBar.endLine);
+        int barHeight = Math.abs(Math.abs(scoreBar.endLine) - Math.abs(scoreBar.startLine)) * SCORE_LINE_SPACE / 2;
         ScoreBarComponent scoreBarComponent = new ScoreBarComponent(4, barHeight);
         scoreBarComponent.setLocation(barXPos, barYPos);
-        add(scoreBarComponent);
+        return scoreBarComponent;
     }
 
-    protected ImageIcon getNoteImage(Note note) {
-        if (note.getRhythmType() == RhythmType.SEMIBREVE) {
-            return semiNoteImage;
-        }
-        if (note.getKey() == KeyFile.C && (note.getOctave() == 2 || note.getOctave() == 4)) {
-            return crossNoteImage;
-        }
-        return fullNoteImage;
-    }
 
     private Set<Integer> labeledColumns = new HashSet<>();
 
     private void renderComponents(java.util.List<PositionedNote> notes) {
         for (PositionedNote localNote : notes) {
             var noteComponent = getNote(localNote.line, localNote.column, localNote.note);
+            //make sure we don't overlap bottom labels
             if (!labeledColumns.contains(localNote.column)) {
                 showNoteText(noteComponent.getX(), localNote.note);
                 labeledColumns.add(localNote.column);
             }
             add(noteComponent);
         }
-
+        for (ScoreBar scoreBar : scoreBars) {
+            add(getScorebarComponent(scoreBar));
+        }
     }
 
     public void addNote(int linePosition, int columnPosition, Note note) {
         notes.add(new PositionedNote(note, columnPosition, linePosition));
-        //repaint();
     }
 
     public void reset() {
         notes.clear();
+        scoreBars.clear();
         repaint();
     }
 
-    protected void noteAdded(Note note, int linePosition, int columnPosition) {
 
-    }
-
-    protected JComponent getNote(int linePosition, int columnPosition, Note note) {
-        JComponent noteLabel = getNoteComponent(note);
+    private JComponent getNote(int linePosition, int columnPosition, Note note) {
+        JComponent noteLabel = getNoteComponent(linePosition, note);
         if (note.isSharp) {
             showSharpSymbol(note);
         }
@@ -197,13 +185,17 @@ public class ScorePanel extends JPanel {
         return noteLabel;
     }
 
-    //TODO: merge this into getNote
-    private JComponent getNoteComponent(Note note) {
-        JLabel noteLabel = new JLabel();
-        ImageIcon imageIcon = getNoteImage(note);
-        noteLabel.setIcon(imageIcon);
-        noteLabel.setSize(imageIcon.getIconWidth(), imageIcon.getIconHeight());
-        return noteLabel;
+    private JComponent getNoteComponent(int linePosition, Note note) {
+        if (linePosition == 0 || linePosition == 12 || linePosition == -12 || linePosition == -14) {
+            return new NoteComponent(note, NoteComponent.CrossLinePosition.MIDDLE);
+        }
+        if (linePosition == 13) {
+            return new NoteComponent(note, NoteComponent.CrossLinePosition.BOTTOM);
+        }
+        if(linePosition == -13) {
+            return new NoteComponent(note, NoteComponent.CrossLinePosition.TOP);
+        }
+        return new NoteComponent(note);
     }
 
     private int getImageCorrection(JComponent imageIcon) {
@@ -222,7 +214,7 @@ public class ScorePanel extends JPanel {
     private void showNoteText(int xPosition, Note note) {
         JLabel noteText = new JLabel(note.toString() + note.getOctave());
         noteText.setLocation(xPosition + 6, getScoreTopPosition() + SCORE_LINE_SPACE * 15);
-        noteText.setSize(new Dimension(30, 30));
+        noteText.setSize(new Dimension(40, 30));
         add(noteText);
     }
 

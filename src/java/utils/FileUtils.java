@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -28,6 +29,9 @@ public class FileUtils {
         bf.write(content);
         bf.close();
         fw.close();
+    }
+    public static URL getResourceUrl(String resourceName) {
+        return FileUtils.class.getResource("/" + resourceName);
     }
 
 

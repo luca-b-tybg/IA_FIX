@@ -3,9 +3,9 @@ package scale;
 public enum RhythmType {
 
     SEMIBREVE(4),
-    DOTTEDMINIM(3),
-    MINIM(3),
-    DOTTEDCROTCHET(1.5),
+    DOTTED_MINIM(3),
+    MINIM(2),
+    DOTTED_CROTCHET(1.5),
     CROTCHET(1),
     QUAVER(0.5);
 

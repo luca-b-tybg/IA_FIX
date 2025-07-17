@@ -8,6 +8,7 @@ public class Note {
     private RhythmType rhythmType = RhythmType.CROTCHET;
     private int octave = 4;
     private boolean isMajor = true;
+    private boolean isDiminished = false;
 
 
 
@@ -21,6 +22,10 @@ public class Note {
         this.octave = octave;
     }
 
+    public Note(KeyFile key, boolean isFlat, boolean isSharp ) {
+       this(key, isFlat, isSharp, RhythmType.CROTCHET, 4);
+    }
+
     public Note(Note n) {
         this.octave = n.getOctave();
         this.isFlat = n.isFlat();
@@ -32,6 +37,7 @@ public class Note {
     public static Note sharp(KeyFile key) {
         var n = new Note(key);
         n.isSharp = true;
+        n.setRhythmType(RhythmType.CROTCHET);
         return n;
     }
 
@@ -85,7 +91,7 @@ public class Note {
     @Override
     public String toString() {
         String keyName = isMajor? key.name(): key.name().toLowerCase();
-        return keyName + (isFlat ? "b" : "") + (isSharp ? "#" : "");
+        return keyName + (isFlat ? "b" : "") + (isSharp ? "#" : "") + (isDiminished? "dim":"");
     }
 
 
@@ -106,16 +112,24 @@ public class Note {
         return isMajor;
     }
 
+    public boolean isDiminished() {
+        return isDiminished;
+    }
+
+    public void setDiminished(boolean diminished) {
+        isDiminished = diminished;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Note note = (Note) o;
-        return isFlat == note.isFlat && octave == note.octave && isMajor == note.isMajor && isSharp == note.isSharp && key == note.key && rhythmType == note.rhythmType;
+        return isFlat == note.isFlat && octave == note.octave && isMajor == note.isMajor && isDiminished == note.isDiminished && isSharp == note.isSharp && key == note.key && rhythmType == note.rhythmType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(key, isFlat, rhythmType, octave, isMajor, isSharp);
+        return Objects.hash(key, isFlat, rhythmType, octave, isMajor, isDiminished, isSharp);
     }
 }

@@ -36,10 +36,6 @@ public class DS7Scales {
     // Known major scales with their correct accidentals for reference
     private static Map<Note, List<Note>> majorScales = new LinkedHashMap<>(
 
-
-            //  {"Bb", "C", "D", "Eb", "F", "G", "A"},    // Bb major - Bb, Eb
-            //  {"Eb", "F", "G", "Ab", "Bb", "C", "D"},   // Eb major - Bb, Eb, Ab
-            //  {"Ab", "Bb", "C", "Db", "Eb", "F", "G"}   // Ab major - Bb, Eb, Ab, Db
     );
 
     static {
@@ -158,13 +154,23 @@ public class DS7Scales {
         return keyPosition + (7 * (note.getOctave() - 4));
     }
 
+    public static int getNotePosition(KeyFile keyFile) {
+        return DS7Scales.C_MAJOR_NOTES.indexOf(keyFile);
+    }
+
+
+    public static KeyFile getKeyForScorePosition(int keyScorePosition) {
+
+        var x = keyScorePosition < C_MAJOR_NOTES.size() ? keyScorePosition : keyScorePosition % 7;
+        return DS7Scales.C_MAJOR_NOTES.get(x);
+    }
+
     //   private String[] scaleTones = new String[7];        // Semitone pattern for the selected mode
     private Integer[] organisedCTones = new Integer[7];   // Reorganized semitone pattern of C major
 
     public DS7Scales(Note scaleNote) {
 
         // Find where our tonic is in the C major scale
-        //   findNoteIndex tiTest = new findNoteIndex();
         int tonicIndex = Math.max(C_MAJOR_NOTES.indexOf(scaleNote.getKey()), 0);
 
         // Reorganize the scale and semitones starting from the tonic
@@ -191,22 +197,33 @@ public class DS7Scales {
 
         // For other modes, first get the relative major key's scale
         // Then rotate it to get the correct mode
-        List<Note> majorScale = getMajorScaleForKey(scaleNote.getKey(), mode);
+        List<Note> majorScale = getMajorScaleForKey(scaleNote, mode);
         return applyModeToMajorScale(mode, majorScale);
     }
 
     /**
      * Determines the relative major scale for a given mode
      */
-    private List<Note> getMajorScaleForKey(KeyFile key, Mode mode) {
+    private List<Note> getMajorScaleForKey(Note note, Mode mode) {
         // First find the relative major key based on the mode
         // For example, if we're in D Dorian, the relative major is C
         int modeOffset = mode.ordinal();
-        int cMajorIndex = Math.max(C_MAJOR_NOTES.indexOf(key), 0);
+        int cMajorIndex = Math.max(C_MAJOR_NOTES.indexOf(note.getKey()), 0);
 
         ///TODO: Fix these lookups
         KeyFile relativeMajorKey = C_MAJOR_NOTES.get((cMajorIndex - modeOffset + 7) % 7);
-        return majorScales.getOrDefault(relativeMajorKey, majorScales.get(KeyFile.C));
+        List<Boolean> flatFlags = Arrays.asList(true, false);
+        List<Boolean> sharpFlags = Arrays.asList(true, false);
+        for (boolean isSharp : flatFlags) {
+            for (boolean isFlat : sharpFlags) {
+                Note noteCandidate = new Note(relativeMajorKey, isFlat, isSharp);
+                if (majorScales.containsKey(noteCandidate)) {
+                    return majorScales.get(noteCandidate);
+                }
+
+            }
+        }
+        return majorScales.get(Note.forKey(KeyFile.C));
     }
 
     /**

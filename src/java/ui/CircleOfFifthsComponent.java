@@ -77,7 +77,7 @@ public class CircleOfFifthsComponent extends JPanel {
             double angle = Math.toRadians((360 / 12.) * i - 90);
             var keyLabel = new JLabel(currentKey.toString());
             keyLabel.setFont(new Font("Default", Font.BOLD, 14));
-            keyLabel.setSize(50, 16);
+            keyLabel.setSize(55, 16);
             if (isSelectedRoot(currentKey)) {
                 keyLabel.setForeground(Color.RED);
                 keyLabel.setFont(new Font("Default", Font.BOLD, 16));
@@ -88,17 +88,18 @@ public class CircleOfFifthsComponent extends JPanel {
             int xMaj = (int) (getWidth() / 2. + Math.cos(angle) * (getRadius(circleLevel) - 10));
             int yMaj = (int) (getHeight() / 2. + Math.sin(angle) * (getRadius(circleLevel) - 10));
             keyLabel.setLocation(xMaj, yMaj);
-            if (!currentKey.isDiminished()) {
+           // if (!currentKey.isDiminished()) {
                 keyLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                 keyLabel.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
+                        System.out.println(currentKey);
                         CircleOfFifthsComponent.this.selectKey(currentKey);
                     }
 
 
                 });
-            }
+           // }
             this.add(keyLabel);
         }
     }

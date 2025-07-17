@@ -21,7 +21,7 @@ public class Main {
     private static void showWindow() {
         JFrame frame = new JFrame("Music Theory Toolkit");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1280, 768);
+        frame.setSize(1560, 768);
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Diatonic Scale Generator", new DiatonicScalePanel());

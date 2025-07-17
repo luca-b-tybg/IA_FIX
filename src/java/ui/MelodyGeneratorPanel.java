@@ -2,6 +2,7 @@ package ui;
 
 import circle.CircleOfFifthsKeyFile;
 import melodygenerator.MelodyGenerator;
+import scale.KeyFile;
 import scale.Note;
 import utils.FileUtils;
 
@@ -17,7 +18,14 @@ public class MelodyGeneratorPanel extends JPanel {
 
     private MelodyGenerator melodyGenerator = new MelodyGenerator();
 
-    ProgressionScorePanel scorePanel = new ProgressionScorePanel();
+    ProgressionScorePanel scorePanel = new ProgressionScorePanel(){
+        @Override
+        protected List<Note> getTopBarNotes(Note progressionNote) {
+            //TODO:
+
+            return melodyGenerator.generateMelodyProgression(CircleOfFifthsKeyFile.sharpMinor(KeyFile.C));
+        }
+    };
 
     class ProgressionListPanel extends JPanel {
 
@@ -27,7 +35,7 @@ public class MelodyGeneratorPanel extends JPanel {
 
             add(controlPanel, BorderLayout.SOUTH);
 
-            JButton addProgressionBtn = new JButton("Add");
+            JButton addProgressionBtn = new JButton("Open Progression");
             addProgressionBtn.addActionListener(ev -> {
                 JFileChooser fileChooser = new JFileChooser();
                 if (fileChooser.showOpenDialog(parentWindow) == JFileChooser.APPROVE_OPTION) {
@@ -49,7 +57,7 @@ public class MelodyGeneratorPanel extends JPanel {
             });
 
             controlPanel.add(addProgressionBtn);
-            controlPanel.add(new JButton("Remove"));
+
         }
     }
 
@@ -57,12 +65,12 @@ public class MelodyGeneratorPanel extends JPanel {
         scorePanel.reset();
         scorePanel.setProgressions(progressionKeys);
 
-        List<Note> notes = melodyGenerator.generateMelodyProgression(progressionKeys);
-        System.out.println(notes);
+       /* List<Note> notes = melodyGenerator.generateMelodyProgression(progressionKeys);
+        //System.out.println(notes);
         int noteIndex = 0;
         for (Note note : notes) {
             scorePanel.addNote(1, noteIndex++, note);
-        }
+        }*/
 
         scorePanel.repaint();
     }
