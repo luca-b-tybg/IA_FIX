@@ -12,6 +12,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Renders the circles and manages the selected keys
+ */
 public class CircleOfFifthsComponent extends JPanel {
     private static final int RADIUS_ADJUSTMENT = 60;
     public List<CircleOfFifthsKeyFile> selectedKeys = new ArrayList<>();

@@ -1,9 +1,7 @@
-package ui;
+package ui.components;
 
 import scale.KeyFile;
 import scale.Note;
-import ui.components.NoteComponent;
-import ui.components.ScoreBarComponent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +12,10 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class ScorePanel extends JPanel {
+/**
+ * Reusable component to render the music score and its components
+ */
+public class MusicScoreComponent extends JPanel {
 
     static class PositionedNote {
         Note note;
@@ -66,7 +67,7 @@ public class ScorePanel extends JPanel {
     private java.util.List<PositionedNote> notes = new ArrayList<>();
     private java.util.List<ScoreBar> scoreBars = new ArrayList<>();
 
-    public ScorePanel() {
+    public MusicScoreComponent() {
         setLayout(null);
     }
 

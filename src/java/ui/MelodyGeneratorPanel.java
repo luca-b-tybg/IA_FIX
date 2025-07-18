@@ -18,11 +18,10 @@ public class MelodyGeneratorPanel extends JPanel {
 
     private MelodyGenerator melodyGenerator = new MelodyGenerator();
 
-    ProgressionScorePanel scorePanel = new ProgressionScorePanel(){
+    ProgressionMusicScoreComponent scorePanel = new ProgressionMusicScoreComponent(){
         @Override
         protected List<Note> getTopBarNotes(Note progressionNote) {
             //TODO:
-
             return melodyGenerator.generateMelodyProgression(CircleOfFifthsKeyFile.sharpMinor(KeyFile.C));
         }
     };

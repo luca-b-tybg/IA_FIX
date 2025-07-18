@@ -5,12 +5,13 @@ import diatonicscale.DS7Scales;
 import scale.KeyFile;
 import scale.Note;
 import scale.RhythmType;
+import ui.components.MusicScoreComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-class ProgressionScorePanel extends ScorePanel {
+class ProgressionMusicScoreComponent extends MusicScoreComponent {
     private Map<KeyFile, Integer> positions = Map.of(KeyFile.A, -9,
             KeyFile.B, -8, KeyFile.C, -7, KeyFile.D, -6, KeyFile.E, -5, KeyFile.G, -10);
 

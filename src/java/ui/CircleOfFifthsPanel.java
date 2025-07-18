@@ -9,6 +9,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Main Container for Circle of fifths feature
+ * contains the CircleOfFifthsComponent that renders the circle and control panel that adds
+ * the control buttons
+ */
 public class CircleOfFifthsPanel extends JPanel {
 
 
@@ -26,7 +31,7 @@ public class CircleOfFifthsPanel extends JPanel {
                 JDialog dialog = new JDialog(parentWindow);
                 dialog.setSize(new Dimension(800, 600));
                 Container dialogContainer = dialog.getContentPane();
-                ProgressionScorePanel scorePanel = new ProgressionScorePanel();
+                ProgressionMusicScoreComponent scorePanel = new ProgressionMusicScoreComponent();
                 scorePanel.setLocation(new Point(10, 10));
                 scorePanel.setSize(new Dimension(800, 600));
                 scorePanel.setVisible(true);

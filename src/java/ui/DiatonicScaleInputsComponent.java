@@ -13,7 +13,10 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 
-public class DiatonicScaleInputsPanel extends JPanel {
+/**
+ * The Panel that contains the input parameters for
+ */
+public class DiatonicScaleInputsComponent extends JPanel {
 
     private JPanel startingOctaveInput; // Starting octave
     private JPanel endingOctaveInput; // Ending octave
@@ -95,7 +98,7 @@ public class DiatonicScaleInputsPanel extends JPanel {
         return container;
     }
 
-    public DiatonicScaleInputsPanel() {
+    public DiatonicScaleInputsComponent() {
         startingOctaveInput = getOctaveRangePanel(2, 5, 0); // Starting octave
         endingOctaveInput = getOctaveRangePanel(3, 6, 1); // Ending octave
         keyInputCb.addActionListener(new ActionListener() {

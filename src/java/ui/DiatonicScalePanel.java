@@ -4,27 +4,28 @@ import diatonicscale.DS7Scales;
 import diatonicscale.DiatonicScaleInputs;
 import scale.Note;
 import scale.OctaveGenerator;
+import ui.components.MusicScoreComponent;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class DiatonicScalePanel extends JPanel implements DiatonicScaleParameterListener {
-    private final DiatonicScaleInputsPanel inputParamsPanel = new DiatonicScaleInputsPanel();
-    private final ScorePanel scorePanel = new ScorePanel();
+    private final DiatonicScaleInputsComponent inputParamsPanel = new DiatonicScaleInputsComponent();
+    private final MusicScoreComponent musicScoreComponent = new MusicScoreComponent();
 
 
     public DiatonicScalePanel() {
         setLayout(new BorderLayout());
         inputParamsPanel.addParameterChangeListener(this);
         add(inputParamsPanel, BorderLayout.LINE_START);
-        JScrollPane scrollPane = new JScrollPane(scorePanel);
-        scorePanel.setPreferredSize(new Dimension(960, 300));
+        JScrollPane scrollPane = new JScrollPane(musicScoreComponent);
+        musicScoreComponent.setPreferredSize(new Dimension(960, 300));
         add(scrollPane, BorderLayout.CENTER);
     }
 
     private void showBar(int columnPosition) {
-        scorePanel.addScoreBar(columnPosition, -12, -4);
-        scorePanel.addScoreBar(columnPosition, 0, 8);
+        musicScoreComponent.addScoreBar(columnPosition, -12, -4);
+        musicScoreComponent.addScoreBar(columnPosition, 0, 8);
     }
 
     @Override
@@ -33,10 +34,10 @@ public class DiatonicScalePanel extends JPanel implements DiatonicScaleParameter
         var notes = ds7Scales.findSharpsAndFlats(diatonicScaleInputs.getScale(), diatonicScaleInputs.getMode());
         var octaveNotes = OctaveGenerator.generateFullScaleWithOctaves(diatonicScaleInputs.getOctRange(), notes);
         int noteCount = 0;
-        scorePanel.reset();
+        musicScoreComponent.reset();
 
         for (Note note : octaveNotes) {
-            scorePanel.addNote(DS7Scales.getNotePositionRelativeToMiddleC(note), noteCount, note);
+            musicScoreComponent.addNote(DS7Scales.getNotePositionRelativeToMiddleC(note), noteCount, note);
             noteCount++;
         }
         //render the vertical bars
