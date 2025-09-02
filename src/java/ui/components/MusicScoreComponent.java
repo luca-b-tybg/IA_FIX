@@ -166,13 +166,6 @@ public class MusicScoreComponent extends JPanel {
         notes.add(new PositionedNote(note, columnPosition, linePosition));
     }
 
-    public void reset() {
-        notes.clear();
-        scoreBars.clear();
-        repaint();
-    }
-
-
     private JComponent getNote(int linePosition, int columnPosition, Note note) {
         JComponent noteLabel = getNoteComponent(linePosition, note);
         if (note.isSharp) {
@@ -193,7 +186,7 @@ public class MusicScoreComponent extends JPanel {
         if (linePosition == 13) {
             return new NoteComponent(note, NoteComponent.CrossLinePosition.BOTTOM);
         }
-        if(linePosition == -13) {
+        if (linePosition == -13) {
             return new NoteComponent(note, NoteComponent.CrossLinePosition.TOP);
         }
         return new NoteComponent(note);

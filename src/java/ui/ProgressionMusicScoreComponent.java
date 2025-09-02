@@ -16,10 +16,10 @@ class ProgressionMusicScoreComponent extends MusicScoreComponent {
             KeyFile.B, -8, KeyFile.C, -7, KeyFile.D, -6, KeyFile.E, -5, KeyFile.G, -10);
 
 
-    public void setProgressions(List<CircleOfFifthsKeyFile> progressions) {
+    public void setProgressions(List<CircleOfFifthsKeyFile> bottomBarNotes) {
         int noteIndex = 0;
         int columnPosition = 0;
-        java.util.List<Note> notes = getProgressionNotes(progressions);
+        List<Note> notes = getProgressionNotes(bottomBarNotes);
         for (Note note : notes) {
             int linePosition = getScoreNotePosition(note);
             List<Note> topBarNotes = getTopBarNotes(note);
@@ -41,6 +41,10 @@ class ProgressionMusicScoreComponent extends MusicScoreComponent {
         //    showBar(columnPosition +1);
     }
 
+    protected  List<Note> getTopBarNotes(Note note) {
+        return new ArrayList<>();
+    }
+
     private void addTopBarNotes(int startColumn, List<Note> notes) {
         int columnPosition = startColumn;
         for (Note note : notes) {
@@ -49,17 +53,13 @@ class ProgressionMusicScoreComponent extends MusicScoreComponent {
         showBar(columnPosition);
     }
 
-    protected List<Note> getTopBarNotes(Note progressionNote) {
-        return new ArrayList<>();
-    }
-
     private void showBar(int columnPosition) {
         addScoreBar(columnPosition, -12, -4);
         addScoreBar(columnPosition, 0, 8);
     }
 
-    private java.util.List<Note> getProgressionNotes(List<CircleOfFifthsKeyFile> progressions) {
-        java.util.List<Note> progressionNotes = new ArrayList<>();
+    private List<Note> getProgressionNotes(List<CircleOfFifthsKeyFile> progressions) {
+        List<Note> progressionNotes = new ArrayList<>();
         for (CircleOfFifthsKeyFile keyFile : progressions) {
             Note newNote = new Note(keyFile.getKeyFile(), false, keyFile.isSharp(), RhythmType.SEMIBREVE, 2);
             newNote.setDiminished(keyFile.isDiminished());

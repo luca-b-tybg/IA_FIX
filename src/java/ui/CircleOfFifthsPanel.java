@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,10 +34,10 @@ public class CircleOfFifthsPanel extends JPanel {
                 Container dialogContainer = dialog.getContentPane();
                 ProgressionMusicScoreComponent scorePanel = new ProgressionMusicScoreComponent();
                 scorePanel.setLocation(new Point(10, 10));
-                scorePanel.setSize(new Dimension(800, 600));
-                scorePanel.setVisible(true);
                 scorePanel.setProgressions(progressions);
-                dialogContainer.add(scorePanel);
+                JScrollPane progressionScroller = new JScrollPane(scorePanel);
+                scorePanel.setPreferredSize(new Dimension(65 * progressions.size(), 300));
+                dialogContainer.add(progressionScroller);
                 dialog.setVisible(true);
             });
             resetBtn.addActionListener(_e -> {

@@ -5,9 +5,9 @@
 ### TODO
 
 1. Key signature order for sharps and flats the order is different
-2. Octaves : add bass clef
-3. Rules for chords in bass clef, don't go below F2, and don't go above B3
-4. Scales need to move up and down from selected octaves
+~~2. Octaves : add bass clef~~ 
+~~3. Rules for chords in bass clef, don't go below F2, and don't go above B3~~
+~~4. Scales need to move up and down from selected octaves~~
 5. Sharps and flats need to be added for other modes
 
 
