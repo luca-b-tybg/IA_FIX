@@ -34,9 +34,7 @@ public class DS7Scales {
     );
 
     // Known major scales with their correct accidentals for reference
-    private static Map<Note, List<Note>> majorScales = new LinkedHashMap<>(
-
-    );
+    private static Map<Note, List<Note>> majorScales = new LinkedHashMap<>();
 
     static {
         majorScales.put(
@@ -106,7 +104,7 @@ public class DS7Scales {
                         Note.flat(KeyFile.G),
                         Note.flat(KeyFile.A),
                         Note.flat(KeyFile.B),
-                        Note.forKey(KeyFile.C)));// Db/C# major - //{"Db", "Eb", "F", "Gb", "Ab", "Bb", "C"},
+                        Note.forKey(KeyFile.C)));// Db major
         majorScales.put(Note.flat(KeyFile.A), Arrays.asList(
                 Note.flat(KeyFile.A),
                 Note.flat(KeyFile.B),
@@ -114,8 +112,7 @@ public class DS7Scales {
                 Note.flat(KeyFile.D),
                 Note.flat(KeyFile.E),
                 Note.forKey(KeyFile.F),
-                Note.forKey(KeyFile.G)//{"Ab", "Bb", "C", "Db", "Eb", "F", "G"},   // Ab/G# major - F#, C#, G#
-        ));
+                Note.forKey(KeyFile.G))); // Ab major
         majorScales.put(Note.sharp(KeyFile.F), Arrays.asList(
                 Note.sharp(KeyFile.F),
                 Note.sharp(KeyFile.G),
@@ -123,8 +120,7 @@ public class DS7Scales {
                 Note.forKey(KeyFile.B),
                 Note.sharp(KeyFile.C),
                 Note.sharp(KeyFile.D),
-                Note.forKey(KeyFile.E) //{"F#", "G#", "A#", "B", "C#", "D#", "E#"},     // F#/Gb major - remember, E# = F
-        ));
+                Note.forKey(KeyFile.E))); // F# major
         majorScales.put(Note.flat(KeyFile.B),
                 Arrays.asList(Note.flat(KeyFile.B),
                         Note.forKey(KeyFile.C),
@@ -132,7 +128,7 @@ public class DS7Scales {
                         Note.flat(KeyFile.E),
                         Note.forKey(KeyFile.F),
                         Note.forKey(KeyFile.G),
-                        Note.forKey(KeyFile.A))); //{"Bb", "C", "D", "Eb", "F", "G", "A"}      // Bb/A# major
+                        Note.forKey(KeyFile.A))); // Bb major
         majorScales.put(Note.flat(KeyFile.E),
                 Arrays.asList(Note.flat(KeyFile.E),
                         Note.forKey(KeyFile.F),
@@ -140,7 +136,7 @@ public class DS7Scales {
                         Note.flat(KeyFile.A),
                         Note.flat(KeyFile.B),
                         Note.forKey(KeyFile.C),
-                        Note.forKey(KeyFile.D)));//{"Eb" "F", "G", "Ab", "Bb", "C", "D"}    //  Eb
+                        Note.forKey(KeyFile.D))); // Eb major
     }
 
     public static Note[] getKnownScales() {
@@ -158,18 +154,14 @@ public class DS7Scales {
         return DS7Scales.C_MAJOR_NOTES.indexOf(keyFile);
     }
 
-
     public static KeyFile getKeyForScorePosition(int keyScorePosition) {
-
         var x = keyScorePosition < C_MAJOR_NOTES.size() ? keyScorePosition : keyScorePosition % 7;
         return DS7Scales.C_MAJOR_NOTES.get(x);
     }
 
-    //   private String[] scaleTones = new String[7];        // Semitone pattern for the selected mode
     private Integer[] organisedCTones = new Integer[7];   // Reorganized semitone pattern of C major
 
     public DS7Scales(Note scaleNote) {
-
         // Find where our tonic is in the C major scale
         int tonicIndex = Math.max(C_MAJOR_NOTES.indexOf(scaleNote.getKey()), 0);
 
@@ -184,100 +176,84 @@ public class DS7Scales {
         }
     }
 
-
     /**
      * Applies appropriate sharps and flats to the scale based on the selected key and mode
      */
     public List<Note> findSharpsAndFlats(Note scaleNote, Mode mode) {
         // For Ionian/Major mode, use predefined major scales
         if (mode == Mode.IONIAN) {
-            // applyMajorScale(key, mode);
             return majorScales.get(scaleNote);
         }
 
-        // For other modes, first get the relative major key's scale
-        // Then rotate it to get the correct mode
-        List<Note> majorScale = getMajorScaleForKey(scaleNote, mode);
-        return applyModeToMajorScale(mode, majorScale);
-    }
+        // For other modes, find the relative major and rotate it
+        Note relativeMajor = getRelativeMajorKey(scaleNote, mode);
+        List<Note> relativeMajorScale = majorScales.get(relativeMajor);
 
-    /**
-     * Determines the relative major scale for a given mode
-     */
-    private List<Note> getMajorScaleForKey(Note note, Mode mode) {
-        // First find the relative major key based on the mode
-        // For example, if we're in D Dorian, the relative major is C
-        int modeOffset = mode.ordinal();
-        int cMajorIndex = Math.max(C_MAJOR_NOTES.indexOf(note.getKey()), 0);
-
-        ///TODO: Fix these lookups
-        KeyFile relativeMajorKey = C_MAJOR_NOTES.get((cMajorIndex - modeOffset + 7) % 7);
-        List<Boolean> flatFlags = Arrays.asList(true, false);
-        List<Boolean> sharpFlags = Arrays.asList(true, false);
-        for (boolean isSharp : flatFlags) {
-            for (boolean isFlat : sharpFlags) {
-                Note noteCandidate = new Note(relativeMajorKey, isFlat, isSharp);
-                if (majorScales.containsKey(noteCandidate)) {
-                    return majorScales.get(noteCandidate);
+        if (relativeMajorScale == null) {
+            // Try to find any major scale with the same key
+            for (Map.Entry<Note, List<Note>> entry : majorScales.entrySet()) {
+                if (entry.getKey().getKey() == relativeMajor.getKey()) {
+                    relativeMajorScale = entry.getValue();
+                    break;
                 }
-
             }
         }
-        return majorScales.get(Note.forKey(KeyFile.C));
+
+        if (relativeMajorScale == null) {
+            return majorScales.get(Note.forKey(KeyFile.C)); // fallback
+        }
+
+        return applyModeToMajorScale(mode, relativeMajorScale);
     }
 
     /**
-     * Applies mode rotation to a major scale to get the correct mode
+     * Calculate the relative major key for a given modal tonic
      */
-    private List<Note> applyModeToMajorScale(Mode mode, List<Note> majorScale) {
+    private Note getRelativeMajorKey(Note modalTonic, Mode mode) {
+        // Map mode to its relative major interval
+        int modeOffset = mode.ordinal();
+        int modalTonicIndex = C_MAJOR_NOTES.indexOf(modalTonic.getKey());
+        int relativeMajorIndex = (modalTonicIndex - modeOffset + 7) % 7;
+        KeyFile relativeMajorKeyFile = C_MAJOR_NOTES.get(relativeMajorIndex);
+
+        // Create relative major with same accidentals as modal tonic
+        Note relativeMajor;
+        if (modalTonic.isSharp()) {
+            relativeMajor = Note.sharp(relativeMajorKeyFile);
+        } else if (modalTonic.isFlat()) {
+            relativeMajor = Note.flat(relativeMajorKeyFile);
+        } else {
+            relativeMajor = Note.forKey(relativeMajorKeyFile);
+        }
+
+        // Try to find exact match first
+        if (majorScales.containsKey(relativeMajor)) {
+            return relativeMajor;
+        }
+
+        // Try to find any match with the same key
+        for (Note candidate : majorScales.keySet()) {
+            if (candidate.getKey() == relativeMajorKeyFile) {
+                return candidate;
+            }
+        }
+
+        return relativeMajor;
+    }
+
+    /**
+     * Applies mode rotation to a major scale to get the correct modal scale
+     */
+    private List<Note> applyModeToMajorScale(Mode mode, List<Note> relativeMajorScale) {
         int modeOffset = mode.ordinal();
         List<Note> result = new ArrayList<>();
+
         for (int i = 0; i < 7; i++) {
-            result.add(majorScale.get((i++ + modeOffset) % 7));
+            Note originalNote = relativeMajorScale.get((i + modeOffset) % 7);
+            // Create a copy to avoid modifying the original
+            result.add(new Note(originalNote));
         }
+
         return result;
     }
-
-    /**
-     * Fallback method that uses the original algorithm approach for scales
-     * that aren't explicitly defined
-     */
-    private List<Note> applyAlgorithmicScale(Mode mode) {
-        List<Integer> scaleTones = semitones.get(mode);
-        for (int current = 0; current < 7; current++) {
-            int next = (current + 1) % 7;
-
-            int st = scaleTones.get(current);
-            int oct = organisedCTones[current];
-            int st1 = scaleTones.get(next);
-            int oct1 = organisedCTones[next];
-
-            if (st > oct && st1 < oct1) {
-                organisedCTones[current] = scaleTones.get(current);
-                organisedCTones[next] = scaleTones.get(next);
-                organisedScale[next].setSharp(true);
-            }
-
-            if (st > oct && st1 == oct1) {
-                organisedCTones[current] = scaleTones.get(current);
-                organisedCTones[next] = scaleTones.get(next);
-                organisedScale[current].setFlat(true);
-            }
-
-            if (st < oct && st1 > oct1) {
-                organisedCTones[current] = scaleTones.get(current);
-                organisedCTones[next] = scaleTones.get(next);
-                organisedScale[next].setFlat(true);
-            }
-
-            if (st < oct && st1 == oct1) {
-                organisedCTones[current] = scaleTones.get(current);
-                organisedCTones[next] = scaleTones.get(next);
-                organisedScale[next].setFlat(true);
-            }
-        }
-        return new ArrayList<>();
-    }
-
-
 }
