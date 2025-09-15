@@ -26,6 +26,7 @@ public class MelodyGeneratorPanel extends JPanel {
 
         JButton addProgressionBtn = new JButton("Open Progression");
         addProgressionBtn.addActionListener(ev -> {
+            //Displaying the file selection dialog
             JFileChooser fileChooser = new JFileChooser();
             if (fileChooser.showOpenDialog(parentWindow) == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
@@ -37,7 +38,7 @@ public class MelodyGeneratorPanel extends JPanel {
                         CircleOfFifthsKeyFile key = CircleOfFifthsKeyFile.fromString(progression);
                         progressionKeys.add(key);
                     }
-                    setProgressions(progressionKeys);
+                    setProgressions(progressionKeys);// onc the file is loaded, the new progressions are displayed
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);

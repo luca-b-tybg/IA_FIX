@@ -5,6 +5,10 @@ import scale.Note;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Renders a not component based on a image, any note image can be used but the image should have a standard size
+ * As per resource/notes
+ */
 public class NoteComponent extends JComponent {
     public enum CrossLinePosition {
         MIDDLE, BOTTOM, TOP, NONE

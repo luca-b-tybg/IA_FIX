@@ -5,7 +5,7 @@ public enum Mode {
     IONIAN("Ioninan"),
     DORIAN("Dorian"),
     PHRYGIAN("Phrygian"),
-    LYDIAN("Lydioan"),
+    LYDIAN("Lydian"),
     MIXOLYDIAN("Mixolydian"),
     AEOLIAN("Aeolian"),
     LOCRIAN("Locrian");

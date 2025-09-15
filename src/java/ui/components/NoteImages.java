@@ -6,6 +6,9 @@ import javax.swing.*;
 
 import static utils.FileUtils.getResourceUrl;
 
+/***
+ * Defines all the note ImageIcons available to the application
+ */
 public class NoteImages {
 
     private static ImageIcon MINIM_ICON = new ImageIcon(getResourceUrl("notes/minim_ note_2.png"));

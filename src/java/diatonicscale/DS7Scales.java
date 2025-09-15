@@ -120,7 +120,7 @@ public class DS7Scales {
                 Note.forKey(KeyFile.B),
                 Note.sharp(KeyFile.C),
                 Note.sharp(KeyFile.D),
-                Note.forKey(KeyFile.E))); // F# major
+                Note.sharp(KeyFile.E))); // F# major
         majorScales.put(Note.flat(KeyFile.B),
                 Arrays.asList(Note.flat(KeyFile.B),
                         Note.forKey(KeyFile.C),

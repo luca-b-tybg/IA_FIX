@@ -1,13 +1,42 @@
+## About the application
+
+ ```Main``` is the entry point of the application, It creates the main JFrame that includes a Tabbed Panel that includes:
+
+- ``ui.DiatonicScalePanel`` - Diatonic scale user interface 
+- ``ui.CircleOfFifthsPanel`` - Circle of Fifths user interface
+-  ``ui.MelodyGeneratorPanel`` - Melody generator user interface
 
 
-## Diatonic scale:
+
+
+
+## Diatonic scale
+
+When user selects the scale parameters from the control panel the sale is automatically updated 
+
+![Diatonic Scale](./images/DiatonicScale.png)
+
+## Circle of fifths
+Main Screen
+![Circle of fifths](./images/circle-of_fiths.png)
+
+Show progression
+
+![Show progression](./images/circle-of_fiths_progression.png)
+
+Save progression
+![Save Progression](./images/circle-of_fiths_save_progression.png)
+
+## Melody generator
+
+![Melody Generator](./images/melody_generator.png)
 
 ### TODO
 
 1. Key signature order for sharps and flats the order is different
-~~2. Octaves : add bass clef~~ 
-~~3. Rules for chords in bass clef, don't go below F2, and don't go above B3~~
-~~4. Scales need to move up and down from selected octaves~~
+2. Octaves : add bass clef
+3. Rules for chords in bass clef, don't go below F2, and don't go above B3
+4. Scales need to move up and down from selected octaves
 5. Sharps and flats need to be added for other modes
 
 

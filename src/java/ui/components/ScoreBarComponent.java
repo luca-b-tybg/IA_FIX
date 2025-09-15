@@ -3,6 +3,9 @@ package ui.components;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Vertical bar component
+ */
 public class ScoreBarComponent extends JComponent {
     public ScoreBarComponent(int width, int height) {
         setSize(new Dimension(width,height));

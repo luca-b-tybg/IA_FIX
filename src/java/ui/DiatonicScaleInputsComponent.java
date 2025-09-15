@@ -30,30 +30,26 @@ public class DiatonicScaleInputsComponent extends JPanel {
 
     private void onParamChanged() {
         try {
+            //for each radiobutton placed on the startOctaveInput panel we enable or disable the valid octave ranges
             for (Component c : startingOctaveInput.getComponents()) {
-                if (c instanceof JRadioButton) {
-                    JRadioButton b = (JRadioButton) c;
-                    if (Integer.parseInt(b.getText()) >= getEndOctave()) {
-                        b.setEnabled(false);
-                    } else {
-                        b.setEnabled(true);
-                    }
+                if (c instanceof JRadioButton b) {
+
+                    b.setEnabled(Integer.parseInt(b.getText()) < getEndOctave());
+                }
+            }
+            //for each radiobutton placed on the startOctaveInput panel we enable or disable the valid octave ranges
+            for (Component c : endingOctaveInput.getComponents()) {
+                if (c instanceof JRadioButton b) {
+                    //enable onl the buttons with the text greater than start octave
+                    b.setEnabled(Integer.parseInt(b.getText()) > getStartOctave());
                 }
             }
 
-            for (Component c : endingOctaveInput.getComponents()) {
-                if (c instanceof JRadioButton) {
-                    JRadioButton b = (JRadioButton) c;
-                    if (Integer.parseInt(b.getText()) <= getStartOctave()) {
-                        b.setEnabled(false);
-                    } else {
-                        b.setEnabled(true);
-                    }
-                }
-            }
             DiatonicScaleInputs userInputResult = new DiatonicScaleInputs(new OctaveRange(octRange[0], octRange[1]),
                     (Note) keyInputCb.getSelectedItem(),
                     (Mode) tonalityInputCb.getSelectedItem());
+
+            //we notify each listener that the Sale Input parameter has been changed
             for (DiatonicScaleParameterListener listener : parameterListeners) {
                 listener.onDiatonicScaleParametersChanged(userInputResult);
             }
@@ -73,7 +69,7 @@ public class DiatonicScaleInputsComponent extends JPanel {
         return octRange[0];
     }
 
-
+    //creates a panel that contains radio buttons for selecting the octave range
     private JPanel getOctaveRangePanel(int from, int to, int octaveIndex) {
         JPanel container = new JPanel(new FlowLayout());
         container.setPreferredSize(new Dimension(300, 60));

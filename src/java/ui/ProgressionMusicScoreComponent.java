@@ -3,29 +3,38 @@ package ui;
 import circle.CircleOfFifthsKeyFile;
 import diatonicscale.DS7Scales;
 import scale.KeyFile;
+import scale.Mode;
 import scale.Note;
 import scale.RhythmType;
 import ui.components.MusicScoreComponent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 class ProgressionMusicScoreComponent extends MusicScoreComponent {
     private Map<KeyFile, Integer> positions = Map.of(KeyFile.A, -9,
             KeyFile.B, -8, KeyFile.C, -7, KeyFile.D, -6, KeyFile.E, -5, KeyFile.G, -10);
 
+    List<Note> keyNotes;
 
     public void setProgressions(List<CircleOfFifthsKeyFile> bottomBarNotes) {
         int noteIndex = 0;
         int columnPosition = 0;
         List<Note> notes = getProgressionNotes(bottomBarNotes);
         for (Note note : notes) {
+            if (noteIndex == 0 ) {
+                var keyNote = new Note(note.getKey(), note.isFlat(), note.isSharp);
+                var ds7Scales = new DS7Scales(keyNote);
+                if (note.isMajor()) {
+                    keyNotes = ds7Scales.findSharpsAndFlats(keyNote, Mode.IONIAN);
+                } else {
+                    keyNotes = ds7Scales.findSharpsAndFlats(keyNote, Mode.AEOLIAN);
+                }
+
+            }
             int linePosition = getScoreNotePosition(note);
             List<Note> topBarNotes = getTopBarNotes(note);
             addTopBarNotes(columnPosition, topBarNotes);
             columnPosition = topBarNotes.size() < 1 ? columnPosition + 1 : (columnPosition + topBarNotes.size());
-            System.out.println(topBarNotes + " " + columnPosition);
             addNote(linePosition, (columnPosition - topBarNotes.size() / 2) - 1, note);
             for (int i = 1; i <= 2; i++) {
                 int newLinePosition = linePosition + 2 * i;
@@ -34,14 +43,25 @@ class ProgressionMusicScoreComponent extends MusicScoreComponent {
                 Note newNote = new Note(newKeyFile, false, false, RhythmType.SEMIBREVE, note.getOctave());
                 addNote(newLinePosition, (columnPosition - topBarNotes.size() / 2) - 1, newNote);
             }
-            // showBar(columnPosition);
             noteIndex++;
         }
-        //adding last bar
-        //    showBar(columnPosition +1);
     }
 
-    protected  List<Note> getTopBarNotes(Note note) {
+    @Override
+    public Set<KeyFile> getSharpKeys() {
+        Set<KeyFile> sharpKeys = new HashSet<>();
+        if (keyNotes != null) {
+            for (Note note : keyNotes) {
+                if (note.isSharp) {
+                    sharpKeys.add(note.getKey());
+                }
+            }
+        }
+
+        return sharpKeys;
+    }
+
+    protected List<Note> getTopBarNotes(Note note) {
         return new ArrayList<>();
     }
 

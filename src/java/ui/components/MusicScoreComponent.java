@@ -43,6 +43,8 @@ public class MusicScoreComponent extends JPanel {
     private static final int SCORE_LINE_SPACE = 20;
     private static final int NOTE_GAP_SPACE = 55;
     private static final int SCORE_LINE_COUNT = 13;
+    private static final int STAVE_SPACING = 140; //The amount of pixels allocated to the keys symbols
+
 
     // Key signature positions for sharps and flats on the treble clef
     private static final Map<KeyFile, Integer> SHARP_POSITIONS = Map.of(
@@ -75,8 +77,6 @@ public class MusicScoreComponent extends JPanel {
     private static final String SHARP_SYMBOL = "♯";
 
     int cleveSymbolCount = 0;
-    private Set<KeyFile> displayedSharps = new HashSet<>();
-    private Set<KeyFile> displayedFlats = new HashSet<>();
 
     private java.util.List<PositionedNote> notes = new ArrayList<>();
     private java.util.List<ScoreBar> scoreBars = new ArrayList<>();
@@ -109,14 +109,15 @@ public class MusicScoreComponent extends JPanel {
 
     private void showKeySignature() {
         // Display sharps in the correct order
+        Set<KeyFile> displayedSharps = getSharpKeys();
         for (KeyFile sharpKey : SHARP_ORDER) {
             if (displayedSharps.contains(sharpKey)) {
                 int linePosition = SHARP_POSITIONS.get(sharpKey);
                 showKeySignatureSymbol(linePosition, SHARP_SYMBOL, 24);
             }
         }
-
         // Display flats in the correct order
+        Set<KeyFile> displayedFlats = getFlatKeys();
         for (KeyFile flatKey : FLAT_ORDER) {
             if (displayedFlats.contains(flatKey)) {
                 int linePosition = FLAT_POSITIONS.get(flatKey);
@@ -129,31 +130,35 @@ public class MusicScoreComponent extends JPanel {
         JLabel label = new JLabel(symbol);
         label.setFont(new Font("Default", Font.BOLD, size));
         label.setSize(40, 40);
-        label.setLocation(60 + (cleveSymbolCount * 15), getNoteScorePosition(linePosition) - 40);
+        label.setLocation(55 + (cleveSymbolCount * 11), getNoteScorePosition(linePosition) - 15);
         cleveSymbolCount++;
         this.add(label);
     }
 
-    private void collectKeySignatureFromNotes() {
-        // Clear previous key signature
-        displayedSharps.clear();
-        displayedFlats.clear();
-
-        // Collect all sharps and flats from the scale
+    public Set<KeyFile> getSharpKeys() {
+        Set<KeyFile> displayedSharps = new HashSet<>();
         for (PositionedNote posNote : notes) {
             if (posNote.note.isSharp()) {
                 displayedSharps.add(posNote.note.getKey());
             }
+        }
+        return displayedSharps;
+    }
+
+    public Set<KeyFile> getFlatKeys() {
+        Set<KeyFile> displayedFlats = new HashSet<>();
+        for (PositionedNote posNote : notes) {
             if (posNote.note.isFlat()) {
                 displayedFlats.add(posNote.note.getKey());
             }
         }
+        return displayedFlats;
     }
+
 
     private void resetView() {
         this.removeAll();
-        displayedSharps.clear();
-        displayedFlats.clear();
+
         cleveSymbolCount = 0;
         labeledColumns.clear();
     }
@@ -246,7 +251,7 @@ public class MusicScoreComponent extends JPanel {
     }
 
     private int getColumnPosition(int columnIndex) {
-        return 120 + NOTE_GAP_SPACE * columnIndex;
+        return STAVE_SPACING + NOTE_GAP_SPACE * columnIndex;
     }
 
     private int getNoteScorePosition(int scaleLine) {
@@ -277,7 +282,6 @@ public class MusicScoreComponent extends JPanel {
 
         if (!notes.isEmpty()) {
             resetView();
-            collectKeySignatureFromNotes(); // Collect key signature before rendering
             showClefIcon();
             showKeySignature(); // Show key signature in correct order
             showBaseClefIcon();

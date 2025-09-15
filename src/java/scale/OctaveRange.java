@@ -9,10 +9,6 @@ public class OctaveRange {
         this.octaveEnd = octaveEnd;
     }
 
-    public int getSelectedLength() {
-        return octaveEnd - octaveStart;
-    }
-
     @Override
     public String toString() {
         return "OctaveRange{" +
