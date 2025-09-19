@@ -9,9 +9,6 @@ public class Note {
     private int octave = 4;
     private boolean isMajor = true;
     private boolean isDiminished = false;
-
-
-
     public boolean isSharp;
 
     public Note(KeyFile key, boolean isFlat, boolean isSharp, RhythmType rhythmType, int octave) {
@@ -32,6 +29,8 @@ public class Note {
         this.isSharp = n.isSharp();
         this.key = n.getKey();
         this.rhythmType = n.getRhythmType();
+        this.isMajor = n.isMajor();
+        this.isDiminished = n.isDiminished();
     }
 
     public static Note sharp(KeyFile key) {
@@ -52,12 +51,20 @@ public class Note {
     public static Note fromString(String spec) {
        String  key =   String.valueOf (spec.charAt(0));
        boolean isSharp = spec.contains("#");
-       boolean isFFlat = spec.contains("b");
+       boolean isFlat = spec.contains("b");
        int octave = 4;
-       if(isFFlat && isSharp) {
-           octave = spec.charAt(4);
+       
+       // Extract octave if present
+       try {
+           String octaveStr = spec.replaceAll("[^0-9]", "");
+           if (!octaveStr.isEmpty()) {
+               octave = Integer.parseInt(octaveStr);
+           }
+       } catch (NumberFormatException e) {
+           octave = 4; // default
        }
-       return new Note(KeyFile.valueOf( key.toUpperCase()), isFFlat, isSharp, RhythmType.CROTCHET, octave);
+       
+       return new Note(KeyFile.valueOf(key.toUpperCase()), isFlat, isSharp, RhythmType.CROTCHET, octave);
     }
 
     public static Note forKey(KeyFile key) {
@@ -80,8 +87,8 @@ public class Note {
         return key;
     }
 
-    public void setFlat(boolean isSharp) {
-        isFlat = isSharp;
+    public void setFlat(boolean flat) {
+        this.isFlat = flat;
     }
 
     public void setRhythmType(RhythmType rhythmType) {
@@ -93,8 +100,6 @@ public class Note {
         String keyName = isMajor? key.name(): key.name().toLowerCase();
         return keyName + (isFlat ? "b" : "") + (isSharp ? "#" : "") + (isDiminished? "dim":"");
     }
-
-
 
     public RhythmType getRhythmType() {
         return rhythmType;
@@ -110,6 +115,10 @@ public class Note {
 
     public boolean isMajor() {
         return isMajor;
+    }
+
+    public void setMajor(boolean major) {
+        isMajor = major;
     }
 
     public boolean isDiminished() {

@@ -15,14 +15,11 @@ import java.util.List;
 
 public class MelodyGeneratorPanel extends JPanel {
     private JFrame parentWindow;
-
     private MelodyGenerator melodyGenerator = new MelodyGenerator();
-
-
     private JScrollPane progressionScroller;
+
     public JPanel getControlPanel() {
         JPanel controlPanel = new JPanel();
-
 
         JButton addProgressionBtn = new JButton("Open Progression");
         addProgressionBtn.addActionListener(ev -> {
@@ -35,10 +32,12 @@ public class MelodyGeneratorPanel extends JPanel {
                     String[] progressions = content.split(",");
                     List<CircleOfFifthsKeyFile> progressionKeys = new ArrayList<>();
                     for (String progression : progressions) {
-                        CircleOfFifthsKeyFile key = CircleOfFifthsKeyFile.fromString(progression);
-                        progressionKeys.add(key);
+                        if (!progression.trim().isEmpty()) {
+                            CircleOfFifthsKeyFile key = CircleOfFifthsKeyFile.fromString(progression.trim());
+                            progressionKeys.add(key);
+                        }
                     }
-                    setProgressions(progressionKeys);// onc the file is loaded, the new progressions are displayed
+                    setProgressions(progressionKeys);// once the file is loaded, the new progressions are displayed
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -55,25 +54,26 @@ public class MelodyGeneratorPanel extends JPanel {
             remove(progressionScroller);
             progressionScroller = null;
         }
+        
+        // Create a score component that displays key signature based on first chord
         ProgressionMusicScoreComponent scorePanel = new ProgressionMusicScoreComponent() {
             @Override
             protected List<Note> getTopBarNotes(Note note) {
-                return melodyGenerator.generateMelodyProgression(CircleOfFifthsKeyFile.sharpMinor(KeyFile.C));
+                // Generate melody based on the chord progression
+                return melodyGenerator.generateMelodyProgression(progressionKeys.get(0));
             }
         };
+        
         scorePanel.setProgressions(progressionKeys);
         scorePanel.setPreferredSize(new Dimension(progressionKeys.size() * 175, 300));
-         progressionScroller = new JScrollPane(scorePanel);
+        progressionScroller = new JScrollPane(scorePanel);
         add(progressionScroller, BorderLayout.CENTER);
         validate();
-
     }
 
     public MelodyGeneratorPanel(JFrame parentWindow) {
         this.parentWindow = parentWindow;
         setLayout(new BorderLayout());
         add(getControlPanel(), BorderLayout.SOUTH);
-
-
     }
 }
