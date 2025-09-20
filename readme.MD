@@ -8,8 +8,6 @@
 
 
 
-
-
 ## Diatonic scale
 
 When user selects the scale parameters from the control panel the sale is automatically updated 
@@ -31,7 +29,10 @@ Save progression
 
 ![Melody Generator](./images/melody_generator.png)
 
-### TODO
+
+### OLD TODOS
+
+### GENERAL
 
 1. Key signature order for sharps and flats the order is different
 2. Octaves : add bass clef
