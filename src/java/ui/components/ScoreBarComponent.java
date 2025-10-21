@@ -12,7 +12,7 @@ public class ScoreBarComponent extends JComponent {
     }
 
     @Override
-    public void paint(Graphics g) {
+    protected void paintComponent(Graphics g) {
         ((Graphics2D) g).setStroke(new BasicStroke(getWidth()));
         g.drawLine(0, 0, 0, getHeight());
     }

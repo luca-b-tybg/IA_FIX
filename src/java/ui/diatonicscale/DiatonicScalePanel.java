@@ -1,4 +1,4 @@
-package ui;
+package ui.diatonicscale;
 
 import diatonicscale.DS7Scales;
 import diatonicscale.DiatonicScaleInputs;

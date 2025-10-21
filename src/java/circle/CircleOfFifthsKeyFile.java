@@ -10,71 +10,52 @@ public class CircleOfFifthsKeyFile {
     private final KeyFile keyFile;
     private final CircleOfFifthsMinorMajor majorOrMinor;
     private boolean isSharp = false;
-    private boolean isFlat = false;
     private boolean isDiminished = false;
 
-    // Updated constructor to support flats
-    public CircleOfFifthsKeyFile(KeyFile keyFile, CircleOfFifthsMinorMajor majorOrMinor, boolean isSharp, boolean isFlat, boolean isDiminished) {
+
+    private CircleOfFifthsKeyFile(KeyFile keyFile, CircleOfFifthsMinorMajor majorOrMinor, boolean isSharp, boolean isDiminished) {
         this.keyFile = keyFile;
         this.majorOrMinor = majorOrMinor;
         this.isSharp = isSharp;
-        this.isFlat = isFlat;
         this.isDiminished = isDiminished;
-    }
-
-    // Legacy constructor for backward compatibility
-    private CircleOfFifthsKeyFile(KeyFile keyFile, CircleOfFifthsMinorMajor majorOrMinor, boolean isSharp, boolean isDiminished) {
-        this(keyFile, majorOrMinor, isSharp, false, isDiminished);
     }
 
     public static CircleOfFifthsKeyFile fromString(String spec) {
         String key = String.valueOf(spec.charAt(0));
         CircleOfFifthsMinorMajor majorOrMinor = StringUtils.isUpperCase(spec.charAt(0)) ? CircleOfFifthsMinorMajor.MAJOR : CircleOfFifthsMinorMajor.MINOR;
         boolean isSharp = spec.contains("#");
-        boolean isFlat = spec.contains("b") && !spec.contains("dim"); // 'b' not part of 'dim'
         boolean isDim = spec.contains("dim");
 
-        return new CircleOfFifthsKeyFile(KeyFile.valueOf(key.toUpperCase()), majorOrMinor, isSharp, isFlat, isDim);
+
+        return new CircleOfFifthsKeyFile(KeyFile.valueOf(key.toUpperCase()), majorOrMinor, isSharp, isDim);
     }
 
     public static CircleOfFifthsKeyFile sharp(KeyFile key) {
-        return new CircleOfFifthsKeyFile(key, CircleOfFifthsMinorMajor.MINOR, true, false, false);
+        return new CircleOfFifthsKeyFile(key, CircleOfFifthsMinorMajor.MINOR, true, false);
     }
 
     public static CircleOfFifthsKeyFile major(KeyFile key) {
-        return new CircleOfFifthsKeyFile(key, CircleOfFifthsMinorMajor.MAJOR, false, false, false);
+        return new CircleOfFifthsKeyFile(key, CircleOfFifthsMinorMajor.MAJOR, false, false);
     }
 
     public static CircleOfFifthsKeyFile minor(KeyFile key) {
-        return new CircleOfFifthsKeyFile(key, CircleOfFifthsMinorMajor.MINOR, false, false, false);
+        return new CircleOfFifthsKeyFile(key, CircleOfFifthsMinorMajor.MINOR, false, false);
     }
 
     public static CircleOfFifthsKeyFile sharpMinor(KeyFile key) {
-        return new CircleOfFifthsKeyFile(key, CircleOfFifthsMinorMajor.MINOR, true, false, false);
+        return new CircleOfFifthsKeyFile(key, CircleOfFifthsMinorMajor.MINOR, true, false);
     }
 
     public static CircleOfFifthsKeyFile sharpMajor(KeyFile key) {
-        return new CircleOfFifthsKeyFile(key, CircleOfFifthsMinorMajor.MAJOR, true, false, false);
-    }
-
-    public static CircleOfFifthsKeyFile flatMajor(KeyFile key) {
-        return new CircleOfFifthsKeyFile(key, CircleOfFifthsMinorMajor.MAJOR, false, true, false);
-    }
-
-    public static CircleOfFifthsKeyFile flatMinor(KeyFile key) {
-        return new CircleOfFifthsKeyFile(key, CircleOfFifthsMinorMajor.MINOR, false, true, false);
+        return new CircleOfFifthsKeyFile(key, CircleOfFifthsMinorMajor.MAJOR, true, false);
     }
 
     public static CircleOfFifthsKeyFile diminished(KeyFile key) {
-        return new CircleOfFifthsKeyFile(key, CircleOfFifthsMinorMajor.MAJOR, false, false, true);
+        return new CircleOfFifthsKeyFile(key, CircleOfFifthsMinorMajor.MAJOR, false, true);
     }
 
     public static CircleOfFifthsKeyFile sharpDiminished(KeyFile key) {
-        return new CircleOfFifthsKeyFile(key, CircleOfFifthsMinorMajor.MAJOR, true, false, true);
-    }
-
-    public static CircleOfFifthsKeyFile flatDiminished(KeyFile key) {
-        return new CircleOfFifthsKeyFile(key, CircleOfFifthsMinorMajor.MAJOR, false, true, true);
+        return new CircleOfFifthsKeyFile(key, CircleOfFifthsMinorMajor.MAJOR, true, true);
     }
 
     public boolean isMinor() {
@@ -97,12 +78,10 @@ public class CircleOfFifthsKeyFile {
         if (isSharp) {
             result = result + "#";
         }
-        if (isFlat) {
-            result = result + "b";
-        }
         if (isDiminished) {
             result = result + "dim";
         }
+
 
         return result;
     }
@@ -115,24 +94,16 @@ public class CircleOfFifthsKeyFile {
         return isSharp;
     }
 
-    public boolean isFlat() {
-        return isFlat;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CircleOfFifthsKeyFile that = (CircleOfFifthsKeyFile) o;
-        return isSharp == that.isSharp && 
-               isFlat == that.isFlat && 
-               isDiminished == that.isDiminished && 
-               keyFile == that.keyFile && 
-               majorOrMinor == that.majorOrMinor;
+        return isSharp == that.isSharp && isDiminished == that.isDiminished && keyFile == that.keyFile && majorOrMinor == that.majorOrMinor;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(keyFile, majorOrMinor, isSharp, isFlat, isDiminished);
+        return Objects.hash(keyFile, majorOrMinor, isSharp, isDiminished);
     }
 }

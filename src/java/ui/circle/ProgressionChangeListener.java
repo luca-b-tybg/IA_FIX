@@ -1,9 +1,9 @@
-package ui;
+package ui.circle;
 
 import circle.CircleOfFifthsKeyFile;
 
 import java.util.List;
 
 public interface ProgressionChangeListener {
-    public void onNewProgression(List<CircleOfFifthsKeyFile> progressionKeys);
+     void onNewProgression(List<CircleOfFifthsKeyFile> progressionKeys);
 }

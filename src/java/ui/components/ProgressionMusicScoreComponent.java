@@ -1,4 +1,4 @@
-package ui;
+package ui.components;
 
 import circle.CircleOfFifthsKeyFile;
 import diatonicscale.DS7Scales;
@@ -6,42 +6,41 @@ import scale.KeyFile;
 import scale.Mode;
 import scale.Note;
 import scale.RhythmType;
-import ui.components.MusicScoreComponent;
 
 import java.util.*;
 
-class ProgressionMusicScoreComponent extends MusicScoreComponent {
+/**
+ *  Renders a progression score
+ * It extends the basic MusicScoreComponent by enriching the basic score component with the progression score specific logic to handle the progressions
+ *
+ */
+public class ProgressionMusicScoreComponent extends MusicScoreComponent {
     private Map<KeyFile, Integer> positions = Map.of(KeyFile.A, -9,
             KeyFile.B, -8, KeyFile.C, -7, KeyFile.D, -6, KeyFile.E, -5, KeyFile.G, -10);
 
     List<Note> keyNotes;
-    private CircleOfFifthsKeyFile keySignatureKey; // The key that determines the key signature
 
     public void setProgressions(List<CircleOfFifthsKeyFile> bottomBarNotes) {
         int noteIndex = 0;
         int columnPosition = 0;
-        
-        // Set the key signature based on the first chord in the progression
-        if (!bottomBarNotes.isEmpty()) {
-            keySignatureKey = bottomBarNotes.get(0);
-        }
-        
         List<Note> notes = getProgressionNotes(bottomBarNotes);
         for (Note note : notes) {
-            if (noteIndex == 0) {
-                var keyNote = new Note(note.getKey(), note.isFlat(), note.isSharp);
+            if (noteIndex == 0 ) {
+                var keyNote = new Note(note.getKey(), note.isFlat(), note.isSharp());
                 var ds7Scales = new DS7Scales(keyNote);
                 if (note.isMajor()) {
                     keyNotes = ds7Scales.findSharpsAndFlats(keyNote, Mode.IONIAN);
                 } else {
                     keyNotes = ds7Scales.findSharpsAndFlats(keyNote, Mode.AEOLIAN);
                 }
+
             }
             int linePosition = getScoreNotePosition(note);
             List<Note> topBarNotes = getTopBarNotes(note);
             addTopBarNotes(columnPosition, topBarNotes);
-            columnPosition = topBarNotes.size() < 1 ? columnPosition + 1 : (columnPosition + topBarNotes.size());
+            columnPosition = topBarNotes.isEmpty() ? columnPosition + 1 : (columnPosition + topBarNotes.size());
             addNote(linePosition, (columnPosition - topBarNotes.size() / 2) - 1, note);
+            //adding 2 notes on top of the existing one
             for (int i = 1; i <= 2; i++) {
                 int newLinePosition = linePosition + 2 * i;
                 int x = DS7Scales.getNotePosition(note.getKey()) + (2 * i);
@@ -56,62 +55,20 @@ class ProgressionMusicScoreComponent extends MusicScoreComponent {
     @Override
     public Set<KeyFile> getSharpKeys() {
         Set<KeyFile> sharpKeys = new HashSet<>();
-        
-        // Determine key signature based on the first chord in progression
-        if (keySignatureKey != null) {
-            Note keyNote = new Note(keySignatureKey.getKeyFile(), 
-                                   false, 
-                                   keySignatureKey.isSharp());
-            
-            DS7Scales ds7Scales = new DS7Scales(keyNote);
-            List<Note> scaleNotes;
-            
-            if (keySignatureKey.isMajor()) {
-                scaleNotes = ds7Scales.findSharpsAndFlats(keyNote, Mode.IONIAN);
-            } else {
-                scaleNotes = ds7Scales.findSharpsAndFlats(keyNote, Mode.AEOLIAN);
-            }
-            
-            for (Note note : scaleNotes) {
+        if (keyNotes != null) {
+            for (Note note : keyNotes) {
                 if (note.isSharp()) {
                     sharpKeys.add(note.getKey());
                 }
             }
         }
-        
+
         return sharpKeys;
-    }
-    
-    @Override
-    public Set<KeyFile> getFlatKeys() {
-        Set<KeyFile> flatKeys = new HashSet<>();
-        
-        // Determine key signature based on the first chord in progression
-        if (keySignatureKey != null) {
-            Note keyNote = new Note(keySignatureKey.getKeyFile(), 
-                                   false, 
-                                   keySignatureKey.isSharp());
-            
-            DS7Scales ds7Scales = new DS7Scales(keyNote);
-            List<Note> scaleNotes;
-            
-            if (keySignatureKey.isMajor()) {
-                scaleNotes = ds7Scales.findSharpsAndFlats(keyNote, Mode.IONIAN);
-            } else {
-                scaleNotes = ds7Scales.findSharpsAndFlats(keyNote, Mode.AEOLIAN);
-            }
-            
-            for (Note note : scaleNotes) {
-                if (note.isFlat()) {
-                    flatKeys.add(note.getKey());
-                }
-            }
-        }
-        
-        return flatKeys;
     }
 
     protected List<Note> getTopBarNotes(Note note) {
+
+        // by default, we do not render any notes on top score, currently this is delegated to Melody Generator
         return new ArrayList<>();
     }
 
@@ -139,6 +96,7 @@ class ProgressionMusicScoreComponent extends MusicScoreComponent {
     }
 
     protected int getScoreNotePosition(Note note) {
+
         if (note.getKey() == KeyFile.F) {
             return -11;
         }
@@ -147,4 +105,6 @@ class ProgressionMusicScoreComponent extends MusicScoreComponent {
         }
         return 0;
     }
+
+
 }

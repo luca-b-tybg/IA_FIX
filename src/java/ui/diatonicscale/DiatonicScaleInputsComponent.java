@@ -1,4 +1,4 @@
-package ui;
+package ui.diatonicscale;
 
 import diatonicscale.DS7Scales;
 import diatonicscale.DiatonicScaleInputs;
@@ -29,11 +29,9 @@ public class DiatonicScaleInputsComponent extends JPanel {
     private int[] octRange = {2, 3};
 
     private void onParamChanged() {
-        try {
             //for each radiobutton placed on the startOctaveInput panel we enable or disable the valid octave ranges
             for (Component c : startingOctaveInput.getComponents()) {
                 if (c instanceof JRadioButton b) {
-
                     b.setEnabled(Integer.parseInt(b.getText()) < getEndOctave());
                 }
             }
@@ -53,12 +51,6 @@ public class DiatonicScaleInputsComponent extends JPanel {
             for (DiatonicScaleParameterListener listener : parameterListeners) {
                 listener.onDiatonicScaleParametersChanged(userInputResult);
             }
-        } catch (Exception e) {
-            System.out.println("Error when creating parameters" + e);
-            e.printStackTrace();
-        }
-
-
     }
 
     private int getEndOctave() {

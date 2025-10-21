@@ -1,8 +1,6 @@
-import melodygenerator.MelodyGenerator;
-import ui.CircleOfFifthsComponent;
-import ui.CircleOfFifthsPanel;
-import ui.DiatonicScalePanel;
-import ui.MelodyGeneratorPanel;
+import ui.circle.CircleOfFifthsPanel;
+import ui.diatonicscale.DiatonicScalePanel;
+import ui.melodygenerator.MelodyGeneratorPanel;
 
 import javax.swing.*;
 import java.util.Scanner;

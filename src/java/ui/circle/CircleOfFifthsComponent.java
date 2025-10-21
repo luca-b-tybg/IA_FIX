@@ -1,4 +1,4 @@
-package ui;
+package ui.circle;
 
 import circle.CircleOfFifthsGenerator;
 import circle.CircleOfFifthsKeyFile;
@@ -17,9 +17,9 @@ import java.util.Set;
  */
 public class CircleOfFifthsComponent extends JPanel {
     private static final int RADIUS_ADJUSTMENT = 60;
-    public List<CircleOfFifthsKeyFile> selectedKeys = new ArrayList<>();
-    public CircleOfFifthsKeyFile topSelectedKey = null;
-    public CircleOfFifthsKeyFile secondSelectedKey = null;
+    private List<CircleOfFifthsKeyFile> selectedKeys = new ArrayList<>();
+    private CircleOfFifthsKeyFile topSelectedKey = null;
+    private CircleOfFifthsKeyFile secondSelectedKey = null;
     private List<ProgressionChangeListener> progressionChangeListeners = new ArrayList<>();
 
     public CircleOfFifthsComponent() {

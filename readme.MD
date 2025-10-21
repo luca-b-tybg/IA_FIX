@@ -2,19 +2,77 @@
 
  ```Main``` is the entry point of the application, It creates the main JFrame that includes a Tabbed Panel that includes:
 
-- ``ui.DiatonicScalePanel`` - Diatonic scale user interface 
-- ``ui.CircleOfFifthsPanel`` - Circle of Fifths user interface
--  ``ui.MelodyGeneratorPanel`` - Melody generator user interface
+- ``ui.diatonicscale.DiatonicScalePanel`` - Diatonic scale user interface 
+- ``ui.circle.CircleOfFifthsPanel`` - Circle of Fifths user interface
+-  ``ui.melodygenerator.MelodyGeneratorPanel`` - Melody generator user interface
 
+The OOP principles used:
+
+Encapsulation - most of the classes hides the implementation details to the outside world and defines methods that
+are only required functionality.
+
+Inheritance - I use inheritance in  building custom UI components. For example ``MusicScoreComponent`` extends a ``JPanel`` and it overrides
+``paintComponent`` method in order to render the score content
+
+Polymorphism - used when we override the behavior of custom ui components from the ``ui.componenets`` most of the re-usable custom
+score overrides the ``paintComponent`` methods. This means that when adding the components to a UI container the rendering functionality
+us delegated to the child component. Also, Polymorphism is used in the case of the delegating events from one component to another, for
+example ``ProgressionChangeListener`` ``DiagnosticScaleListener``
+
+
+
+Use of constructors - Classes that cave complex rules for creation use overloaded constructors in order to make sure that when a particulart
+instance is create is created correctly for examscaleple ``scale.Note``
+
+
+```mermaid
+---
+title: Music Score UI Componenets Class Diagram 
+---
+classDiagram
+    class JComponent {
+        paintComponent(Graphics g)
+    }
+    
+    class NoteComponent{
+        paintComponent(Graphics g)
+    }
+    class MusicScoreComponent{
+        paintComponent(Graphics g)
+        getSharpKeys()
+    }
+    class ProgressionMusicScoreComponent{
+        getSharpKeys()
+    }
+    class ScoreBarComponent {
+        paintComponent(Graphics g)
+    }
+    JComponent<|--NoteComponent
+    JComponent<|--JPanel
+    JComponent<|--ScoreBarComponent
+    JPanel<|-- MusicScoreComponent
+    MusicScoreComponent<|-- ProgressionMusicScoreComponent
+```
 
 
 ## Diatonic scale
 
-When user selects the scale parameters from the control panel the sale is automatically updated 
+When user selects the scale parameters from the control panel the sale is automatically updated
+
+``ui.diatonicscale.DiatonicScalePanel`` - container panel that encapsulates the UI subcomponents ``DiatonicScaleInputsComponent`` - panel that display and implements the 
+validation rules for the input parameters of the diatonic scale and ``ui.components.MusicScoreComponent`` it also implements the interface ``DiatonicScaleParameterListener``
+
+which means it can receive ``DiatonicScaleInputs`` parameter instance when the user will change them in the ui, then ``DiatonicScalePanel``  will update t
+``MusicScoreComponent`` with the new parameters
+
 
 ![Diatonic Scale](./images/DiatonicScale.png)
 
 ## Circle of fifths
+
+``ui.circle.CircleOfFifthsPanel`` -container panel that encapsulates the UI subcomponents ``CircleOfFifthsComponent`` and 2 buttons in order to Reset to default
+or save the current progression
+
 Main Screen
 ![Circle of fifths](./images/circle-of_fiths.png)
 
@@ -29,10 +87,7 @@ Save progression
 
 ![Melody Generator](./images/melody_generator.png)
 
-
-### OLD TODOS
-
-### GENERAL
+### TODO
 
 1. Key signature order for sharps and flats the order is different
 2. Octaves : add bass clef
