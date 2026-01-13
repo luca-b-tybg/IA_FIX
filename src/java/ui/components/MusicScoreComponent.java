@@ -58,13 +58,13 @@ public class MusicScoreComponent extends JPanel {
     );
 
     private static final Map<KeyFile, Integer> FLAT_POSITIONS = Map.of(
-            KeyFile.B, 7,   // Bb on 4th line
-            KeyFile.E, 9,   // Eb on top line
-            KeyFile.A, 6,   // Ab on 3rd space
-            KeyFile.D, 8,   // Db on 4th space
-            KeyFile.G, 5,   // Gb on 2nd space
-            KeyFile.C, 7,   // Cb on 4th line (enharmonic B)
-            KeyFile.F, 4    // Fb on 2nd line (enharmonic E)
+            KeyFile.B, 5,   // Bb on 4th line
+            KeyFile.E, 7,   // Eb on top line
+            KeyFile.A, 4,   // Ab on 3rd space
+            KeyFile.D, 6,   // Db on 4th space
+            KeyFile.G, 3,   // Gb on 2nd space
+            KeyFile.C, 5,   // Cb on 4th line (enharmonic B)
+            KeyFile.F, 2    // Fb on 2nd line (enharmonic E)
     );
 
     // Order for sharps: F# C# G# D# A# E# B#
@@ -127,12 +127,21 @@ public class MusicScoreComponent extends JPanel {
     }
 
     private void showKeySignatureSymbol(int linePosition, String symbol, int size) {
-        JLabel label = new JLabel(symbol);
-        label.setFont(new Font("Default", Font.BOLD, size));
-        label.setSize(40, 40);
-        label.setLocation(55 + (cleveSymbolCount * 11), getNoteScorePosition(linePosition) + 5);
-        cleveSymbolCount++;
-        this.add(label);
+        if(symbol.equals(SHARP_SYMBOL)) {
+            JLabel label = new JLabel(symbol);
+            label.setFont(new Font("Default", Font.BOLD, size));
+            label.setSize(40, 40);
+            label.setLocation(55 + (cleveSymbolCount * 11), getNoteScorePosition(linePosition) - 10);
+            cleveSymbolCount++;
+            this.add(label);}
+        else{
+            JLabel label = new JLabel(symbol);
+            label.setFont(new Font("Default", Font.BOLD, size));
+            label.setSize(40, 40);
+            label.setLocation(55 + (cleveSymbolCount * 11), getNoteScorePosition(linePosition) - 15);
+            cleveSymbolCount++;
+            this.add(label);
+        }
     }
 
     public Set<KeyFile> getSharpKeys() {
