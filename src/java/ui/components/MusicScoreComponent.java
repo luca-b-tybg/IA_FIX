@@ -130,7 +130,7 @@ public class MusicScoreComponent extends JPanel {
         JLabel label = new JLabel(symbol);
         label.setFont(new Font("Default", Font.BOLD, size));
         label.setSize(40, 40);
-        label.setLocation(55 + (cleveSymbolCount * 11), getNoteScorePosition(linePosition) - 15);
+        label.setLocation(55 + (cleveSymbolCount * 11), getNoteScorePosition(linePosition) + 5);
         cleveSymbolCount++;
         this.add(label);
     }
