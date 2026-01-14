@@ -17,7 +17,7 @@ public class Main {
     }
 
     private static void showWindow() {
-        JFrame frame = new JFrame("Music Theory Toolkit");
+        JFrame frame = new JFrame("Composition and Performance Toolkit");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1560, 768);
 
