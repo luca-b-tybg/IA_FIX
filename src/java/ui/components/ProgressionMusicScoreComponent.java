@@ -62,7 +62,6 @@ public class ProgressionMusicScoreComponent extends MusicScoreComponent {
                 }
             }
         }
-
         return sharpKeys;
     }
 

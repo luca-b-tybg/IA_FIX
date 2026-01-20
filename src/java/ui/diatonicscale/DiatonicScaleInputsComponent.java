@@ -52,7 +52,6 @@ public class DiatonicScaleInputsComponent extends JPanel {
                 listener.onDiatonicScaleParametersChanged(userInputResult);
             }
     }
-
     private int getEndOctave() {
         return octRange[1];
     }

@@ -50,9 +50,9 @@ public class MelodyGenerator {
         while (beatCount > 0) {
             int randomLength = RandomGenerator.getDefault().nextInt(RhythmType.values().length);
             RhythmType selectedRhythm = NOTE_LENGTHS[randomLength];
-            if (beatCount >= selectedRhythm.getBitCount()) {
+            if (beatCount >= selectedRhythm.getBeatCount()) {
                 barNoteLengths.add(selectedRhythm);
-                beatCount -= selectedRhythm.getBitCount();
+                beatCount -= selectedRhythm.getBeatCount();
             }
 
         }

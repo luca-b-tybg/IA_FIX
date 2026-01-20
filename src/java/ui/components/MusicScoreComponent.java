@@ -52,18 +52,18 @@ public class MusicScoreComponent extends JPanel {
             KeyFile.C, 6,   // C# on 3rd space
             KeyFile.G, 10,  // G# above staff
             KeyFile.D, 7,   // D# on 4th line
-            KeyFile.A, 5,   // A# on 2nd space
+            KeyFile.A, 4,   // A# on 2nd space
             KeyFile.E, 8,   // E# on 4th space (enharmonic F)
-            KeyFile.B, 4    // B# on 2nd line (enharmonic C)
+            KeyFile.B, 5    // B# on 2nd line (enharmonic C)
     );
 
     private static final Map<KeyFile, Integer> FLAT_POSITIONS = Map.of(
             KeyFile.B, 5,   // Bb on 4th line
-            KeyFile.E, 7,   // Eb on top line
+            KeyFile.E, 8,   // Eb on top line
             KeyFile.A, 4,   // Ab on 3rd space
-            KeyFile.D, 6,   // Db on 4th space
+            KeyFile.D, 7,   // Db on 4th space
             KeyFile.G, 3,   // Gb on 2nd space
-            KeyFile.C, 5,   // Cb on 4th line (enharmonic B)
+            KeyFile.C, 6,   // Cb on 4th line (enharmonic B)
             KeyFile.F, 2    // Fb on 2nd line (enharmonic E)
     );
 

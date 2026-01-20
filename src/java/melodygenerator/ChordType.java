@@ -1,3 +1,0 @@
-package melodygenerator;
-
-public enum ChordType {TONIC, SUPERTONIC, MEDIANT, SUBDOMINANT, DOMINANT, SUBMEDIANT, LEADINGTONE;}
